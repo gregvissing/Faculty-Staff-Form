@@ -1,0 +1,3848 @@
+<style>
+    .c-radio {
+        position: relative;
+    }
+    /* visually hide the radio button,
+   and set it up to be positioned over
+   the styled radio button replacement
+*/
+    
+    .c-radio>input[type="radio"] {
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        appearance: none;
+        /* in case this ever gets supported */
+        background: none;
+        opacity: .00001;
+        z-index: 2;
+    }
+    
+    .c-radio>label {
+        display: inline-block;
+        padding: .75em .5em .75em 2em;
+    }
+    
+    .c-radio>input[type="radio"],
+    .c-radio>label:before,
+    .c-radio>label:after {
+        border: 1px solid;
+        height: 1.125em;
+        left: .125em;
+        position: absolute;
+        top: .825em;
+        width: 1.125em;
+    }
+    
+    .c-radio>input[type="radio"],
+    .c-radio>label:before,
+    .c-radio>label:after {
+        border-radius: 100%;
+        content: " ";
+        transition: border-color .2s ease-in-out, box-shadow .2s ease-in-out;
+    }
+    
+    .c-radio>label:after {
+        border-color: #565656;
+    }
+    
+    .c-radio>label:before {
+        border-color: transparent;
+        box-shadow: 0 0 0 0px rgba(0, 0, 0, 0);
+    }
+    
+    .c-radio>input:checked~label:before {
+        border-color: transparent;
+        box-shadow: 0 0 0 2px #0d5192;
+    }
+    
+    .c-radio>input:focus~label:before {
+        border-color: transparent;
+        box-shadow: 0 0 0 4px #228BEC;
+    }
+    
+    .c-radio>input:checked~label:after {
+        border-color: #fff;
+        border-width: 4px;
+        box-shadow: inset 0 0 0 5px #0d5192;
+    }
+    
+    .c-radio>input[disabled]~label {
+        opacity: .5;
+    }
+    
+    @media screen and (-ms-high-contrast: active) {
+        .c-radio>input:checked~label:before {
+            background: window;
+            border: 6px solid buttonface;
+            box-shadow: none;
+        }
+    }
+    
+    .ui-datepicker-calendar {
+        display: none;
+    }
+</style>
+
+<div class="content-wrapper">
+
+	<!--begin custom variables-->
+	<div id="appeal" class="hidden"></div>
+	<!--end custom variables-->
+
+	<!--begin adf-->
+	<div id="adfConfWrapper" class="hidden"></div>
+	<div id="adfWrapper">
+		<fieldset class="form-group">
+			<legend>
+				<h3>Select Fund(s)</h3>
+			</legend>
+
+			<div id="fundList"></div>
+			<p class="note">If you are not able to find a fund to support, please use the search box below.</p>
+
+			<div id="queryLoader">
+				<i aria-hidden="true" class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+				<span>Funds Loading ...</span>
+			</div>
+   
+			<div class="relative fund-list" style="display: none;">
+				<label for="desSearch" class="adfFormLabel">Search funds by fund name</label>
+				<span class="twitter-typeahead" style="position: relative; display:
+					inline-block;"><input
+						class="adfInput form-control tt-hint" type="text" data-value=""
+						readonly="" autocomplete="off"
+						spellcheck="false" tabindex="-1"
+						style="position: absolute; top: 0px; left: 0px; border-color: transparent;
+						box-shadow: none; opacity: 1; background: none 0% 0% / auto repeat scroll
+						padding-box border-box rgb(255, 255, 255);"
+						dir="ltr"><input id="desSearch" class="adfInput form-control tt-input"
+						type="text"
+						placeholder="Results are loaded as you type" data-value=""
+						autocomplete="off" spellcheck="false"
+						dir="auto" style="position: relative; vertical-align: top;
+						background-color: transparent;">
+					<pre aria-hidden="true"
+						style="position: absolute; visibility: hidden; white-space: pre;
+						font-family: 'Open Sans', arial, sans-serif; font-size: 16px; font-style:
+						normal; font-variant: normal; font-weight: 400; word-spacing: 0px;
+						letter-spacing: 0px; text-indent: 0px; text-rendering: auto;
+						text-transform: none;"></pre>
+					<div class="tt-menu" style="position: absolute; top: 100%; left: 0px;
+						z-index: 100; display: none;">
+						<div class="tt-dataset tt-dataset-search"></div>
+					</div>
+				</span>
+				<svg class="svg-inline--fa fa-keyboard fa-w-18" aria-hidden="true"
+					focusable="false" data-prefix="fas" data-icon="keyboard" role="img"
+					xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="">
+					<path fill="currentColor"
+						d="M528 448H48c-26.51 0-48-21.49-48-48V112c0-26.51 21.49-48
+						48-48h480c26.51 0 48 21.49 48 48v288c0 26.51-21.49 48-48 48zM128
+						180v-40c0-6.627-5.373-12-12-12H76c-6.627 0-12 5.373-12 12v40c0 6.627 5.373
+						12 12 12h40c6.627 0 12-5.373 12-12zm96
+						0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373
+						12 12 12h40c6.627 0 12-5.373 12-12zm96
+						0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373
+						12 12 12h40c6.627 0 12-5.373 12-12zm96
+						0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373
+						12 12 12h40c6.627 0 12-5.373 12-12zm96
+						0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373
+						12 12 12h40c6.627 0 12-5.373 12-12zm-336
+						96v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373
+						12 12 12h40c6.627 0 12-5.373 12-12zm96
+						0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373
+						12 12 12h40c6.627 0 12-5.373 12-12zm96
+						0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373
+						12 12 12h40c6.627 0 12-5.373 12-12zm96
+						0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373
+						12 12 12h40c6.627 0 12-5.373 12-12zm-336
+						96v-40c0-6.627-5.373-12-12-12H76c-6.627 0-12 5.373-12 12v40c0 6.627 5.373
+						12 12 12h40c6.627 0 12-5.373 12-12zm288
+						0v-40c0-6.627-5.373-12-12-12H172c-6.627 0-12 5.373-12 12v40c0 6.627 5.373
+						12 12 12h232c6.627 0 12-5.373 12-12zm96
+						0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373
+						12 12 12h40c6.627 0 12-5.373 12-12z">
+					</path>
+				</svg>
+				<!-- <span class="fas fa-keyboard"></span> -->
+			</div>
+		</fieldset>
+		<fieldset class="form-group" id="giftSummary">
+			<legend>
+				<h3>Gift Summary</h3>
+			</legend>
+			<div class="fund-card empty">
+				<div class="fund-card-header">
+					<p>No gifts selected yet</p>
+				</div>
+				<div class="fund-card-block">
+					<p>Choose a gift from above.</p>
+				</div>
+			</div>
+			<div class="fund-card proc-fee hidden">
+				<div class="fund-card-header">
+					<p><span class="fund-cat">Additional Fees</span></p>
+				</div>
+				<div class="fund-card-block">
+					<div class="row">
+						<div class="g-5 t-g-2 relative remove-bottom">
+							<p class="fund-name">Transaction Fee</p>
+							<p class="fund-guid hidden">390854e0-3f32-41cb-81cc-39f319cea897</p>
+						</div>
+						<div class="g-3 t-g-2 relative remove-bottom">
+							<p class="symbol">$</p><input class="adfInput form-control" type="number"
+								disabled="">
+						</div>
+					</div>
+				</div>
+				<div class="fund-card-footer">
+					<a href="#" class="button remove-fee"><svg class="svg-inline--fa fa-times
+							fa-w-11" aria-hidden="true"
+							focusable="false" data-prefix="fas" data-icon="times" role="img"
+							xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512"
+							data-fa-i2svg="">
+							<path fill="currentColor"
+								d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19
+								0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93
+								89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28
+								32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0
+								44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07
+								100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28
+								12.28-32.19 0-44.48L242.72 256z">
+							</path>
+						</svg><!-- <span class="fas fa-times"></span> -->&nbsp;&nbsp;Remove Fee</a>
+				</div>
+			</div>
+			<div class="total-amount">
+				<h4>Total: <span>$0.00</span></h4>
+			</div>
+			<hr>
+		</fieldset>
+		<fieldset class="form-group" id="giftOptions">
+			<legend>
+				<h3 class="remove-top">Gift Options</h3>
+			</legend>
+
+			<div class="checkbox">
+				<!--<input id="anonymousGift" type="checkbox">
+				<label for="anonymousGift">The Donor would like to make this gift
+					anonymously.</label>-->
+              
+              	<input aria-checked="false" value="anonymous" id="anonymous" type="checkbox"> <label for="anonymous">The Donor would like to make this gift
+					anonymously.</label>
+			</div>
+
+			<div class="checkbox">
+				<input type="checkbox" id="wantOrnament">
+				<label for="wantOrnament">Want Ornament?</label>
+			</div>
+
+			<div class="row">
+				<div class="g-12 remove-bottom margin-mobile">
+					<label for="givingTuesdayAmbassador" class="adfFormLabel">If you were
+						referred by a #GivingTuesday ambassador, please enter their name below.</label>
+					<input id="givingTuesdayAmbassador" placeholder="Enter name of #GivingTuesday ambassador" class="adfInput form-control" type="text" />
+				</div>
+			</div>
+
+			<!--<div class="checkbox hidden">
+                <input type="checkbox" id="pledgeGift" checked="checked">
+                <label for="pledgeGift">This is a pledge (no payment).</label>
+            </div>
+          	<div id="pledgeGiftSection" class="hidden">
+                <div class="row">
+                    <div class="g-1-2 remove-bottom">
+                        <label for="pledgeFrequency" class="adfFormLabel">Pledge Payment Frequency</label>
+                        <select id="pledgeFrequency" class="adfSelect form-control required" required="">
+							<!--<option value="-1" selected="">Select a Frequency
+							</option>--
+                          	<option value="1" selected="">One-Time
+							</option>
+							<option value="2">Monthly
+							</option>
+							<option value="3">Quarterly
+							</option>
+							<option value="4">Annually
+							</option>
+						</select>
+                    </div>
+                    <div class="g-1-2 remove-bottom margin-mobile">
+                        <label for="pledgeInstallments" class="adfFormLabel">Number of
+							Installments</label>
+                        <input id="pledgeInstallments" class="adfInput form-control required" type="number" min="1" step="1" placeholder="Number of Installments" pattern="^[1-9][0-9]*$" required="" value="1" >
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="g-1-2 remove-bottom margin-mobile">
+                        <label for="pledgeStartDate" class="adfFormLabel">Start Date</label>       
+                        <input id="pledgeStartDate" class="adfInput form-control required" type="date" placeholder="mm/dd/yyyy" required="" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="pledgeSummary" class="hidden"><svg class="svg-inline--fa
+							fa-info-circle fa-w-16" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="info-circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg="">
+							<path fill="currentColor"
+								d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248
+								248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42
+								18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0
+								6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12
+								12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12
+								12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z">
+							</path>
+						</svg>
+                        <!-- <span class="fas fa-info-circle"></span> --
+                        <p></p>
+                    </div>
+                </div>
+            </div>-->
+			<!--<div class="checkbox">
+                <input type="checkbox" id="anonymousGift">
+                <label for="anonymousGift">The Donor would like to make this gift anonymously.</label>
+            </div>-->
+			<div class="checkbox">
+				<input type="checkbox" id="tributeGift">
+				<label for="tributeGift">Dedicate this gift in honor or memory of someone.</label>
+			</div>
+			<div id="honoreeSection" class="hidden">
+				<p class="note">Please select a dedication type and enter the honoree's
+					first and last name.</p>
+				<div id="tributeType" class="button-group">
+					<label for="inHonorOf" class="btn active">
+						<input id="inHonorOf" name="tributeType" value="in honor of" type="radio">
+						In Honor Of
+					</label>
+					<label for="inMemoryOf" class="btn">
+						<input id="inMemoryOf" name="tributeType" value="in memory of"
+							type="radio">
+						In Memory Of
+					</label>
+				</div>
+				<div class="row">
+					<div class="g-1-2 remove-bottom margin-mobile">
+						<label for="tributeFirstName" class="adfFormLabel">Honoree First Name</label>
+						<input id="tributeFirstName" class="adfInput form-control required"
+							type="text" placeholder="Honoree First Name" required="">
+					</div>
+					<div class="g-1-2 remove-bottom">
+						<label for="tributeLastName" class="adfFormLabel">Honoree Last Name</label>
+						<input id="tributeLastName" class="adfInput form-control required"
+							type="text" placeholder="Honoree Last Name" required="">
+					</div>
+				</div>
+				<div class="row">
+					<div class="g-12 remove-bottom">
+						<div class="checkbox">
+							<input type="checkbox" id="ackLetter">
+							<label for="ackLetter">I'd like to notify someone about this donation</label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="acknowledgeeSection" class="hidden">
+				<p class="note">Please enter the recipient's information.</p>
+				<div class="row form-group">
+					<div class="g-1-2 remove-bottom margin-mobile">
+						<label for="acknowledgeeFirstName" class="adfFormLabel">Recipient First
+							Name</label>
+						<input id="acknowledgeeFirstName" class="adfInput form-control required"
+							type="text" placeholder="Recipient First Name" required="">
+					</div>
+					<div class="g-1-2 remove-bottom">
+						<label for="acknowledgeeLastName" class="adfFormLabel">Recipient Last Name</label>
+						<input id="acknowledgeeLastName" class="adfInput form-control required"
+							type="text" placeholder="Recipient Last Name" required="">
+					</div>
+				</div>
+
+				<div class="row form-group">
+					<div class="g-1-2 remove-bottom margin-mobile">
+						<label for="acknowledgeePhone" class="adfFormLabel">Recipient Phone Number</label>
+						<input id="acknowledgeePhone" class="adfInput form-control required"
+							type="text" placeholder="Recipient Phone Number" required="">
+					</div>
+					<div class="g-1-2 remove-bottom">
+						<label for="acknowledgeeEmail" class="adfFormLabel">Recipient Email</label>
+						<input id="acknowledgeeEmail" class="adfInput form-control required"
+							type="text" placeholder="Recipient Email" required="">
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="g-1-2 remove-bottom margin-mobile">
+						<label for="acknowledgeeAddress" class="adfFormLabel">Address</label>
+						<input id="acknowledgeeAddress" class="adfInput form-control required"
+							type="text" placeholder="Address" required="">
+					</div>
+					<div class="g-1-2 remove-bottom">
+						<label for="acknowledgeeCountry" class="adfFormLabel">Country</label>
+						<select id="acknowledgeeCountry" class="adfSelect form-control required"
+							required="">
+							<option value="d81cef85-7569-4b2e-8f2e-f7cf998a3342" selected="">United
+								States</option>
+						</select>
+						<!--<select id="acknowledgeeCountry" class="adfSelect form-control required" required="">
+                        	<option value="-1" selected="" />Country
+                    	</select>-->
+					</div>
+				</div>
+				<div class="row">
+					<div class="g-1-3 remove-bottom margin-mobile">
+						<label for="acknowledgeeCity" class="adfFormLabel">City</label>
+						<input id="acknowledgeeCity" class="adfInput form-control required"
+							type="text" placeholder="City" required="">
+					</div>
+					<div class="g-1-3 remove-bottom margin-mobile">
+						<label for="acknowledgeeState" class="adfFormLabel">State/Territory</label>
+						<select id="acknowledgeeState" class="adfSelect form-control required"
+							required="">
+							<option value="-1">State/Territory</option>
+							<option value="AL">Alabama</option>
+							<option value="AK">Alaska</option>
+							<option value="AS">American Samoa</option>
+							<option value="AZ">Arizona</option>
+							<option value="AR">Arkansas</option>
+							<option value="AA">Armed Forces Americas</option>
+							<option value="AE">Armed Forces Europe/Canada/Middle East/Africa</option>
+							<option value="AP">Armed Forces Pacific</option>
+							<option value="CA">California</option>
+							<option value="CZ">Canal Zone</option>
+							<option value="CO">Colorado</option>
+							<option value="CT">Connecticut</option>
+							<option value="DE">Delaware</option>
+							<option value="DC">District of Columbia</option>
+							<option value="FM">Federated States of Micronesia</option>
+							<option value="FL">Florida</option>
+							<option value="GA">Georgia</option>
+							<option value="GU">Guam</option>
+							<option value="HI">Hawaii</option>
+							<option value="ID">Idaho</option>
+							<option value="IL">Illinois</option>
+							<option value="IN">Indiana</option>
+							<option value="IA">Iowa</option>
+							<option value="KS">Kansas</option>
+							<option value="KY">Kentucky</option>
+							<option value="LA">Louisiana</option>
+							<option value="ME">Maine</option>
+							<option value="MH">Marshall Islands</option>
+							<option value="MD">Maryland</option>
+							<option value="MA">Massachusetts</option>
+							<option value="MI">Michigan</option>
+							<option value="MN">Minnesota</option>
+							<option value="MS">Mississippi</option>
+							<option value="MO">Missouri</option>
+							<option value="MT">Montana</option>
+							<option value="NE">Nebraska</option>
+							<option value="NV">Nevada</option>
+							<option value="NH">New Hampshire</option>
+							<option value="NJ">New Jersey</option>
+							<option value="NM">New Mexico</option>
+							<option value="NY">New York</option>
+							<option value="NL">NL</option>
+							<option value="NC">North Carolina</option>
+							<option value="ND">North Dakota</option>
+							<option value="MP">Northern Mariana Islands</option>
+							<option value="OH">Ohio</option>
+							<option value="OK">Oklahoma</option>
+							<option value="ON">ON</option>
+							<option value="OR">Oregon</option>
+							<option value="PW">Palau</option>
+							<option value="PA">Pennsylvania</option>
+							<option value="PR">Puerto Rico</option>
+							<option value="RI">Rhode Island</option>
+							<option value="SC">South Carolina</option>
+							<option value="SD">South Dakota</option>
+							<option value="TN">Tennessee</option>
+							<option value="TX">Texas</option>
+							<option value="UT">Utah</option>
+							<option value="VT">Vermont</option>
+							<option value="VI">Virgin Islands</option>
+							<option value="VA">Virginia</option>
+							<option value="WA">Washington</option>
+							<option value="WV">West Virginia</option>
+							<option value="WI">Wisconsin</option>
+							<option value="WY">Wyoming</option>
+						</select>
+					</div>
+					<div class="g-1-3 remove-bottom">
+						<label for="acknowledgeeZip" class="adfFormLabel">ZIP/Postal Code</label>
+						<input id="acknowledgeeZip" class="adfInput form-control required masked"
+							type="text" maxlength="10" placeholder="ZIP/Postal Code" required=""
+							pattern="\d{5}">
+					</div>
+				</div>
+			</div>
+
+		</fieldset>
+
+		<fieldset class="form-group" id="">
+			<legend>
+				<h3>Payroll Deduction Information</h3>
+			</legend>
+			<!--
+				Gift.PledgeInstallment.NumberOfInstallments
+			-->
+			<small>Enter Number of Pay Periods to calculate Deducted Amount per Pay
+				Period.</small>
+			<div class="row">
+				<div class="g-1-2 remove-bottom margin-mobile">
+					<label for="numberOfInstallments" class="adfFormLabel">Number of Pay
+						Periods</label>
+					<!--<input id="numberOfInstallments" class="adfInput form-control required"
+						type="text" placeholder="Enter Number of Pay Periods" required="">-->
+                  
+					<input id="numberOfInstallments" class="adfInput form-control required" type="number" min="1" pattern="[1-9]\d*" placeholder="Enter Number of Pay Periods" required="">
+				</div>
+			</div>
+			<div class="row">
+				<!--
+					Gift.PledgeInstallment.InstallmentAmount
+				-->
+				<div class="g-1-2 remove-bottom margin-mobile">
+					<label for="installmentAmount" class="adfFormLabel">Deducted Amount per Pay
+						Period</label>
+					<input id="installmentAmount" class="adfInput form-control required"
+						type="text" placeholder="$0.00" required="">
+				</div>
+				<div class="g-1-2 remove-bottom">
+					<label for="totalGift" class="adfFormLabel">Total Gift Amount</label>
+					<input id="totalGift" class="adfInput form-control required" value="$0.00"
+						readonly="" type="text" required="">
+				</div>
+			</div>
+
+			<div class="row">
+				<!--
+					Gift.Recurrence.StartDate
+				-->
+				<div class="g-1-2 remove-bottom margin-mobile">
+					<label for="startMonth" class="adfFormLabel">Pay Period in which to start
+						deductions</label>
+					<!--<input id="startMonth" class="adfInput form-control required" type="text" required="">-->
+					<input class="required" id="startMonth" type="text" required="">
+
+					<!--    <label for="pledgeStartDate" class="adfFormLabel">Start Date</label>       
+                        <input id="pledgeStartDate" class="adfInput form-control required" type="date" placeholder="mm/dd/yyyy" required="" />-->
+				</div>
+
+				<!--
+					Gift.Recurrence.Frequency
+				-->
+				<div class="g-1-2 remove-bottom">
+					<label for="totalGift" class="adfFormLabel">Payroll deduction frequency</label>
+					<div id="frequency" class="flex">
+						<div class="c-radio">
+							<input type="radio" name="pay_period" id="Biweekly" value="Bi-weekly">
+							<label for="Biweekly">Bi-Weekly</label>
+						</div>
+						<div class="c-radio">
+							<input type="radio" name="pay_period" id="Monthly" value="Monthly"
+								checked="">
+							<label for="Monthly">Monthly</label>
+						</div>
+					</div>
+				</div>
+			</div>
+          
+          	<!--<div class="row">
+                <div class="col has-table" style="flex-direction: column;">
+                  	<table class="table table-bordered table-sm table-fluid flush-left">
+                    	<thead>
+                      		<tr>
+                        		<th scope="col">Total # of payments</th>
+                        		<th scope="col">Amount per payment</th>
+                        		<th scope="col">Frequency</th>
+                        		<th scope="col">Gift total</th>
+                      		</tr>
+                    	</thead>
+                    	<tbody>
+                      		<tr>
+                        		<td id="tdPledgePayments" data-header="Total # of payments">1</td>
+                        		<td id="tdPledgePerPayment" data-header="Amount per payment" class="required-message">$0.00</td>
+                        		<td id="tdPledgeFrequency" data-header="Frequency">1 month</td>
+                        		<td id="tdPledgeTotal" data-header="Gift total">$50.00</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div id="tdPledgePerPayment_MinAmount" class="required-message" style="">The minimum installment amount is $5.00</div>
+                </div>
+          	</div>-->
+
+			<div class="row">
+				<div class="g-12 remove-bottom margin-mobile">
+					<label>Have a current pledge? We can start your new pledge when your
+						existing/current pledge is completed.</label>
+					<div class="checkbox">
+						<input type="checkbox" id="startWhenCompleted" autocomplete="off">
+						<label for="startWhenCompleted">Payroll Deduction start after current
+							pledge.</label>
+					</div>
+				</div>
+			</div>
+		</fieldset>
+
+		<fieldset class="form-group" id="billingInfo">
+			<legend>
+				<h3>Donor Information</h3>
+			</legend>
+			<div class="row">
+				<div class="g-1-3 remove-bottom margin-mobile">
+					<label for="personalTitle" class="adfFormLabel">Title</label>
+					<select id="personalTitle" class="adfSelect form-control required">
+						<option value="-1" selected="">Title</option>
+						<option value="Miss">Miss</option>
+						<option value="Mr.">Mr.</option>
+						<option value="Mrs.">Mrs.</option>
+						<option value="Ms.">Ms.</option>
+						<option value="1st Lieutenant">1st Lieutenant</option>
+						<option value="2nd Lieutenant">2nd Lieutenant</option>
+						<option value="ADM">ADM</option>
+						<option value="BG">BG</option>
+						<option value="Bishop">Bishop</option>
+						<option value="Brigadier General">Brigadier General</option>
+						<option value="Brother">Brother</option>
+						<option value="Captain">Captain</option>
+						<option value="CDR">CDR</option>
+						<option value="Chaplain">Chaplain</option>
+						<option value="Colonel">Colonel</option>
+						<option value="Commander">Commander</option>
+						<option value="CPT">CPT</option>
+						<option value="Dean">Dean</option>
+						<option value="Dean Emeritus">Dean Emeritus</option>
+						<option value="Dr.">Dr.</option>
+						<option value="Ensign">Ensign</option>
+						<option value="Father">Father</option>
+						<option value="Field Svc Instructor-Geo">Field Svc Instructor-Geo</option>
+						<option value="General">General</option>
+						<option value="Governor">Governor</option>
+						<option value="The Honorable">The Honorable</option>
+						<option value="Judge">Judge</option>
+						<option value="LCDR">LCDR</option>
+						<option value="Lt Col">Lt Col</option>
+						<option value="LtCol">LtCol</option>
+						<option value="Lt Gen">Lt Gen</option>
+						<option value="LTC">LTC</option>
+						<option value="LTG">LTG</option>
+						<option value="Lt.">Lt.</option>
+						<option value="Lt. Colonel">Lt. Colonel</option>
+						<option value="Lt. Commander">Lt. Commander</option>
+						<option value="Lt. Corporal">Lt. Corporal</option>
+						<option value="Lt. General">Lt. General</option>
+						<option value="Lt. Governor">Lt. Governor</option>
+						<option value="Lt. Junior Grade">Lt. Junior Grade</option>
+						<option value="Magistrate">Magistrate</option>
+						<option value="Major">Major</option>
+						<option value="Major General">Major General</option>
+						<option value="Master Sergeant">Master Sergeant</option>
+						<option value="Mayor">Mayor</option>
+						<option value="Monsignor">Monsignor</option>
+						<option value="Most Reverend">Most Reverend</option>
+						<option value="Pastor">Pastor</option>
+						<option value="Professor">Professor</option>
+						<option value="Rabbi">Rabbi</option>
+						<option value="Rear Admiral">Rear Admiral</option>
+						<option value="Rep.">Rep.</option>
+						<option value="The Reverend">The Reverend</option>
+						<option value="The Reverend Dr.">The Reverend Dr.</option>
+						<option value="Senator">Senator</option>
+						<option value="Sergeant">Sergeant</option>
+						<option value="Sir">Sir</option>
+						<option value="Sister">Sister</option>
+						<option value="Staff Sergeant">Staff Sergeant</option>
+						<option value="SSgt">SSgt</option>
+						<option value="VADM">VADM</option>
+
+						<!--<option value="cb68381c-05ee-4ee9-bf2f-5fe7d448d77c">Admiral</option>
+						<option value="a1d251fe-bc53-498e-92fe-1b8497e04133">Ambassador</option>
+						<option value="dc56acc5-3688-4f79-902c-4ccbb1ab2345">Brother</option>
+						<option value="442748c1-212a-4278-95bb-09d8ef982d91">Captain</option>
+						<option value="76aa43bd-df40-4ae2-b18f-80b48fbea508">Chief</option>
+						<option value="ba21e7d4-f5dc-4254-b739-e91e83762768">Cmdr.</option>
+						<option value="d45930b7-00e3-480f-8426-97d220f3fda6">Col.</option>
+						<option value="2cb62401-b90e-4e72-9b48-d402b5a525b3">Dr.</option>
+						<option value="731d6200-1433-4ff6-b00e-01019e343fc9">Drs.</option>
+						<option value="5e9349fb-7f85-4939-a5bd-9f9144cd9fdd">Father</option>
+						<option value="e566786d-f99c-4d64-8f8f-d638e1efbaf3">General</option>
+						<option value="665182d2-3dc7-411c-98df-f90cb1d0be23">Governor</option>
+						<option value="68a12929-d0da-421b-b3dc-b7af2a0db8b3">Judge</option>
+						<option value="39b7cb05-cf72-47f6-a40e-71296cbf635b">Lt.</option>
+						<option value="782ab63e-f353-44f9-9ece-236055ee16dc">Madam</option>
+						<option value="9bc24b11-cec3-4d79-96fa-72b297b94130">Major</option>
+						<option value="01a8b6d6-3e72-4b6f-8c67-4c9eb8850b6c">Master</option>
+						<option value="3c6193d5-718b-4167-b393-f41b1ccd080a">Miss</option>
+						<option value="5061c07d-59ec-49a8-9066-3d9890e6cce8">Mr.</option>
+						<option value="6fd37e00-6409-4318-80be-0d4b2eaf61dc">Mrs.</option>
+						<option value="d0257dda-e099-4877-92cf-9da7cb7a969e">Ms.</option>
+						<option value="926b52d2-77f6-4af4-8f87-6c7f7df30183">Pastor</option>
+						<option value="b7339686-3cb6-45c5-a486-7b7ab6d6cb6e">Prof.</option>
+						<option value="1ae94d7d-da32-4bf9-9809-d0f099fe6524">Rabbi</option>
+						<option value="8306b773-27d0-4091-804a-8b8deec035ff">Reverend</option>
+						<option value="aee545b3-9942-48f9-8489-b90cdc9dab4c">Senator</option>
+						<option value="b7861f8e-2f61-4a77-97b4-47f70188549a">Sir</option>
+						<option value="769202b9-358a-4a6f-81fe-10952b62ed26">Sir/Madam</option>
+						<option value="16976b9c-0555-4824-b63f-c6fb92b1100d">Sister</option>
+						<option value="2e27af6f-d7f9-40de-b215-3ef00473ed0c">The Honorable</option>-->
+					</select>
+				</div>
+				<div class="g-1-3 remove-bottom margin-mobile">
+					<label for="personalFirstName" class="adfFormLabel">First Name</label>
+					<input id="personalFirstName" class="adfInput form-control required"
+						type="text" placeholder="First Name" required="" >
+				</div>
+				<div class="g-1-3 remove-bottom">
+					<label for="personalLastName" class="adfFormLabel">Last Name</label>
+					<input id="personalLastName" class="adfInput form-control required"
+						type="text" placeholder="Last Name" required="" >
+				</div>
+			</div>
+			<div id="corporateGiftSection" class="row">
+				<div class="g-1-2 remove-bottom margin-mobile">
+					<!-- Employee ID#/M Number -->
+					<label for="employeeID" class="adfFormLabel">Payroll deduction M#</label>
+					<input id="employeeID" class="adfInput form-control required" type="text"
+						placeholder="Payroll deduction M#" required="" >
+				</div>
+
+				<div class="g-1-2 remove-bottom">
+					<label for="companyName" class="adfFormLabel">Primary Employer</label>
+					<select id="companyName" class="adfSelect form-control required"
+						required="">
+						<option value="670ca4ad-803f-46d6-8901-21a17640cba1" selected="">UC / UC
+							Foundation</option>
+						<option value="11280414-3f83-4cd6-a39d-46e1256e2255">UC Health</option>
+					</select>
+					<!--<input id="companyName" class="adfInput form-control required" type="text" placeholder="Primary Employer" required="">-->
+				</div>
+			</div>
+			<div class="row">
+				<div class="g-1-2 remove-bottom margin-mobile">
+					<label for="personalAddress" class="adfFormLabel">Address</label>
+					<input id="personalAddress" class="adfInput form-control required"
+						type="text" placeholder="Address" required="" >
+				</div>
+
+				<div class="g-1-2 remove-bottom">
+					<label for="personalAddressType" class="adfFormLabel">Address Type</label>
+					<select id="personalAddressType" class="adfSelect form-control required"
+						required="">
+						<option value="3de7091d-983f-4bdb-8e5e-fb1e62775677" selected="">Home</option>
+						<option value="9d79f0e6-21e3-46f4-856b-9753566652dc">Business</option>
+					</select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="g-1-2 remove-bottom margin-mobile">
+					<label for="personalZip" class="adfFormLabel">ZIP/Postal Code</label>
+					<input id="personalZip" class="adfInput form-control required masked"
+						type="text" maxlength="10" placeholder="Zip/Postal Code" required=""
+						pattern="\d{5}" >
+				</div>
+				<div class="g-1-2 remove-bottom">
+					<label for="personalCity" class="adfFormLabel">City</label>
+					<input id="personalCity" class="adfInput form-control required" type="text"
+						placeholder="City" required="" >
+				</div>
+			</div>
+			<div class="row">
+				<div class="g-1-2 remove-bottom margin-mobile">
+					<label for="personalState" class="adfFormLabel">State/Territory</label>
+					<select id="personalState" class="adfSelect form-control required"
+						required="">
+						<option value="-1">State/Territory</option>
+						<option value="AL">Alabama</option>
+						<option value="AK">Alaska</option>
+						<option value="AS">American Samoa</option>
+						<option value="AZ">Arizona</option>
+						<option value="AR">Arkansas</option>
+						<option value="AA">Armed Forces Americas</option>
+						<option value="AE">Armed Forces Europe/Canada/Middle East/Africa</option>
+						<option value="AP">Armed Forces Pacific</option>
+						<option value="CA">California</option>
+						<option value="CZ">Canal Zone</option>
+						<option value="CO">Colorado</option>
+						<option value="CT">Connecticut</option>
+						<option value="DE">Delaware</option>
+						<option value="DC">District of Columbia</option>
+						<option value="FM">Federated States of Micronesia</option>
+						<option value="FL">Florida</option>
+						<option value="GA">Georgia</option>
+						<option value="GU">Guam</option>
+						<option value="HI">Hawaii</option>
+						<option value="ID">Idaho</option>
+						<option value="IL">Illinois</option>
+						<option value="IN">Indiana</option>
+						<option value="IA">Iowa</option>
+						<option value="KS">Kansas</option>
+						<option value="KY">Kentucky</option>
+						<option value="LA">Louisiana</option>
+						<option value="ME">Maine</option>
+						<option value="MH">Marshall Islands</option>
+						<option value="MD">Maryland</option>
+						<option value="MA">Massachusetts</option>
+						<option value="MI">Michigan</option>
+						<option value="MN">Minnesota</option>
+						<option value="MS">Mississippi</option>
+						<option value="MO">Missouri</option>
+						<option value="MT">Montana</option>
+						<option value="NE">Nebraska</option>
+						<option value="NV">Nevada</option>
+						<option value="NH">New Hampshire</option>
+						<option value="NJ">New Jersey</option>
+						<option value="NM">New Mexico</option>
+						<option value="NY">New York</option>
+						<option value="NL">NL</option>
+						<option value="NC">North Carolina</option>
+						<option value="ND">North Dakota</option>
+						<option value="MP">Northern Mariana Islands</option>
+						<option value="OH">Ohio</option>
+						<option value="OK">Oklahoma</option>
+						<option value="ON">ON</option>
+						<option value="OR">Oregon</option>
+						<option value="PW">Palau</option>
+						<option value="PA">Pennsylvania</option>
+						<option value="PR">Puerto Rico</option>
+						<option value="RI">Rhode Island</option>
+						<option value="SC">South Carolina</option>
+						<option value="SD">South Dakota</option>
+						<option value="TN">Tennessee</option>
+						<option value="TX">Texas</option>
+						<option value="UT">Utah</option>
+						<option value="VT">Vermont</option>
+						<option value="VI">Virgin Islands</option>
+						<option value="VA">Virginia</option>
+						<option value="WA">Washington</option>
+						<option value="WV">West Virginia</option>
+						<option value="WI">Wisconsin</option>
+						<option value="WY">Wyoming</option>
+					</select>
+				</div>
+				<div class="g-1-2 remove-bottom">
+					<label for="personalCountry" class="adfFormLabel">Country</label>
+					<select id="personalCountry" class="adfSelect form-control required"
+						required="">
+						<option value="d81cef85-7569-4b2e-8f2e-f7cf998a3342" selected="">United States</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="g-1-2 remove-bottom margin-mobile">
+					<label for="personalEmail" class="adfFormLabel">Email Address</label>
+					<input id="personalEmail" class="adfInput form-control required"
+						type="email" placeholder="Email Address" required=""
+						pattern="\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b" >
+				</div>
+				<div class="g-1-2 remove-bottom">
+					<label for="personalEmailType" class="adfFormLabel">Email Type</label>
+					<select id="personalEmailType" class="adfSelect form-control required"
+						required="">
+						<option value="0752f1e6-cfe0-4418-804a-de44d7baaa7c" selected="">Home</option>
+						<option value="1455da2c-87b5-44b9-83e4-4886859676c1">Business</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="g-1-2 remove-bottom margin-mobile">
+					<label for="personalPhone" class="adfFormLabel">Phone #</label>
+					<input id="personalPhone" class="adfInput form-control required" type="tel"
+						placeholder="Phone #" required="" >
+				</div>
+				<div class="g-1-2 remove-bottom">
+					<label for="personalPhoneType" class="adfFormLabel">Phone Type</label>
+					<select id="personalPhoneType" class="adfSelect form-control required"
+						required="">
+						<option value="0752f1e6-cfe0-4418-804a-de44d7baaa7c" selected="">Home</option>
+						<option value="0752f1e6-cfe0-4418-804a-de44d7baaa7c">Cell</option>
+						<option value="1455da2c-87b5-44b9-83e4-4886859676c1">Business</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="checkbox hidden">
+				<input type="checkbox" id="billMeLater">
+				<label for="billMeLater">Bill me later.</label>
+			</div>
+		</fieldset>
+
+		<!--<fieldset class="form-group" id="commentsSection">
+            <legend>
+                <h3>Comments</h3>
+            </legend>
+            <label for="comments" class="adfFormLabel">Comments</label>
+            <textarea id="comments" class="adfText form-control" placeholder="Comments" maxlength="250"></textarea>
+            <p class="char-counter"><span>250</span> characters left</p>
+        </fieldset>-->
+		<div class="row">
+			<div id="adfError" class="add-bottom"><svg class="svg-inline--fa
+					fa-exclamation-circle fa-w-16" aria-hidden="true" focusable="false"
+					data-prefix="fas" data-icon="exclamation-circle" role="img"
+					xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg="">
+					<path fill="currentColor"
+						d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083
+						119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46
+						46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418
+						136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982
+						11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884
+						0-12.356 5.78-11.981 12.654z">
+					</path>
+				</svg>
+				<!-- <span class="fas fa-exclamation-circle"></span> -->
+				<p>Some required information is missing. Form submission is disabled until
+					all required information is entered.
+				</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="g-2 remove-bottom button-container">
+				<button id="adfSubmit" class="full-width">Submit&nbsp;&nbsp;<svg
+						class="svg-inline--fa fa-arrow-right fa-w-14" aria-hidden="true"
+						focusable="false" data-prefix="fas"
+						data-icon="arrow-right" role="img" xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 448 512"
+						data-fa-i2svg="">
+						<path fill="currentColor"
+							d="M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6
+							0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25
+							.4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24
+							24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z">
+						</path>
+					</svg><!-- <span class="fas fa-arrow-right"></span> --></button>
+				<div class="sp sp-circle hidden"></div>
+			</div>
+		</div><input id="designationId" type="hidden" value="">
+	</div>
+	<!--end adf-->
+
+	<!--begin adf dependencies-->
+  	<!--<script src="https://giveto.uc.edu/file/config/typeahead.bundle.js"></script>-->
+  	<script>
+    /*!
+ * typeahead.js 0.11.1
+ * https://github.com/twitter/typeahead.js
+ * Copyright 2013-2015 Twitter, Inc. and other contributors; Licensed MIT
+ */
+
+(function(root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define("bloodhound", ["jquery"], function(a0) {
+            return root["Bloodhound"] = factory(a0);
+        });
+    } else if (typeof exports === "object") {
+        module.exports = factory(require("jquery"));
+    } else {
+        root["Bloodhound"] = factory(jQuery);
+    }
+})(this, function($) {
+    var _ = function() {
+        "use strict";
+        return {
+            isMsie: function() {
+                return /(msie|trident)/i.test(navigator.userAgent) ? navigator.userAgent.match(/(msie |rv:)(\d+(.\d+)?)/i)[2] : false;
+            },
+            isBlankString: function(str) {
+                return !str || /^\s*$/.test(str);
+            },
+            escapeRegExChars: function(str) {
+                return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+            },
+            isString: function(obj) {
+                return typeof obj === "string";
+            },
+            isNumber: function(obj) {
+                return typeof obj === "number";
+            },
+            isArray: $.isArray,
+            isFunction: $.isFunction,
+            isObject: $.isPlainObject,
+            isUndefined: function(obj) {
+                return typeof obj === "undefined";
+            },
+            isElement: function(obj) {
+                return !!(obj && obj.nodeType === 1);
+            },
+            isJQuery: function(obj) {
+                return obj instanceof $;
+            },
+            toStr: function toStr(s) {
+                return _.isUndefined(s) || s === null ? "" : s + "";
+            },
+            bind: $.proxy,
+            each: function(collection, cb) {
+                $.each(collection, reverseArgs);
+
+                function reverseArgs(index, value) {
+                    return cb(value, index);
+                }
+            },
+            map: $.map,
+            filter: $.grep,
+            every: function(obj, test) {
+                var result = true;
+                if (!obj) {
+                    return result;
+                }
+                $.each(obj, function(key, val) {
+                    if (!(result = test.call(null, val, key, obj))) {
+                        return false;
+                    }
+                });
+                return !!result;
+            },
+            some: function(obj, test) {
+                var result = false;
+                if (!obj) {
+                    return result;
+                }
+                $.each(obj, function(key, val) {
+                    if (result = test.call(null, val, key, obj)) {
+                        return false;
+                    }
+                });
+                return !!result;
+            },
+            mixin: $.extend,
+            identity: function(x) {
+                return x;
+            },
+            clone: function(obj) {
+                return $.extend(true, {}, obj);
+            },
+            getIdGenerator: function() {
+                var counter = 0;
+                return function() {
+                    return counter++;
+                };
+            },
+            templatify: function templatify(obj) {
+                return $.isFunction(obj) ? obj : template;
+
+                function template() {
+                    return String(obj);
+                }
+            },
+            defer: function(fn) {
+                setTimeout(fn, 0);
+            },
+            debounce: function(func, wait, immediate) {
+                var timeout, result;
+                return function() {
+                    var context = this,
+                        args = arguments,
+                        later, callNow;
+                    later = function() {
+                        timeout = null;
+                        if (!immediate) {
+                            result = func.apply(context, args);
+                        }
+                    };
+                    callNow = immediate && !timeout;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                    if (callNow) {
+                        result = func.apply(context, args);
+                    }
+                    return result;
+                };
+            },
+            throttle: function(func, wait) {
+                var context, args, timeout, result, previous, later;
+                previous = 0;
+                later = function() {
+                    previous = new Date();
+                    timeout = null;
+                    result = func.apply(context, args);
+                };
+                return function() {
+                    var now = new Date(),
+                        remaining = wait - (now - previous);
+                    context = this;
+                    args = arguments;
+                    if (remaining <= 0) {
+                        clearTimeout(timeout);
+                        timeout = null;
+                        previous = now;
+                        result = func.apply(context, args);
+                    } else if (!timeout) {
+                        timeout = setTimeout(later, remaining);
+                    }
+                    return result;
+                };
+            },
+            stringify: function(val) {
+                return _.isString(val) ? val : JSON.stringify(val);
+            },
+            noop: function() {}
+        };
+    }();
+    var VERSION = "0.11.1";
+    var tokenizers = function() {
+        "use strict";
+        return {
+            nonword: nonword,
+            whitespace: whitespace,
+            obj: {
+                nonword: getObjTokenizer(nonword),
+                whitespace: getObjTokenizer(whitespace)
+            }
+        };
+
+        function whitespace(str) {
+            str = _.toStr(str);
+            return str ? str.split(/\s+/) : [];
+        }
+
+        function nonword(str) {
+            str = _.toStr(str);
+            return str ? str.split(/\W+/) : [];
+        }
+
+        function getObjTokenizer(tokenizer) {
+            return function setKey(keys) {
+                keys = _.isArray(keys) ? keys : [].slice.call(arguments, 0);
+                return function tokenize(o) {
+                    var tokens = [];
+                    _.each(keys, function(k) {
+                        tokens = tokens.concat(tokenizer(_.toStr(o[k])));
+                    });
+                    return tokens;
+                };
+            };
+        }
+    }();
+    var LruCache = function() {
+        "use strict";
+
+        function LruCache(maxSize) {
+            this.maxSize = _.isNumber(maxSize) ? maxSize : 100;
+            this.reset();
+            if (this.maxSize <= 0) {
+                this.set = this.get = $.noop;
+            }
+        }
+        _.mixin(LruCache.prototype, {
+            set: function set(key, val) {
+                var tailItem = this.list.tail,
+                    node;
+                if (this.size >= this.maxSize) {
+                    this.list.remove(tailItem);
+                    delete this.hash[tailItem.key];
+                    this.size--;
+                }
+                if (node = this.hash[key]) {
+                    node.val = val;
+                    this.list.moveToFront(node);
+                } else {
+                    node = new Node(key, val);
+                    this.list.add(node);
+                    this.hash[key] = node;
+                    this.size++;
+                }
+            },
+            get: function get(key) {
+                var node = this.hash[key];
+                if (node) {
+                    this.list.moveToFront(node);
+                    return node.val;
+                }
+            },
+            reset: function reset() {
+                this.size = 0;
+                this.hash = {};
+                this.list = new List();
+            }
+        });
+
+        function List() {
+            this.head = this.tail = null;
+        }
+        _.mixin(List.prototype, {
+            add: function add(node) {
+                if (this.head) {
+                    node.next = this.head;
+                    this.head.prev = node;
+                }
+                this.head = node;
+                this.tail = this.tail || node;
+            },
+            remove: function remove(node) {
+                node.prev ? node.prev.next = node.next : this.head = node.next;
+                node.next ? node.next.prev = node.prev : this.tail = node.prev;
+            },
+            moveToFront: function(node) {
+                this.remove(node);
+                this.add(node);
+            }
+        });
+
+        function Node(key, val) {
+            this.key = key;
+            this.val = val;
+            this.prev = this.next = null;
+        }
+        return LruCache;
+    }();
+    var PersistentStorage = function() {
+        "use strict";
+        var LOCAL_STORAGE;
+        try {
+            LOCAL_STORAGE = window.localStorage;
+            LOCAL_STORAGE.setItem("~~~", "!");
+            LOCAL_STORAGE.removeItem("~~~");
+        } catch (err) {
+            LOCAL_STORAGE = null;
+        }
+
+        function PersistentStorage(namespace, override) {
+            this.prefix = ["__", namespace, "__"].join("");
+            this.ttlKey = "__ttl__";
+            this.keyMatcher = new RegExp("^" + _.escapeRegExChars(this.prefix));
+            this.ls = override || LOCAL_STORAGE;
+            !this.ls && this._noop();
+        }
+        _.mixin(PersistentStorage.prototype, {
+            _prefix: function(key) {
+                return this.prefix + key;
+            },
+            _ttlKey: function(key) {
+                return this._prefix(key) + this.ttlKey;
+            },
+            _noop: function() {
+                this.get = this.set = this.remove = this.clear = this.isExpired = _.noop;
+            },
+            _safeSet: function(key, val) {
+                try {
+                    this.ls.setItem(key, val);
+                } catch (err) {
+                    if (err.name === "QuotaExceededError") {
+                        this.clear();
+                        this._noop();
+                    }
+                }
+            },
+            get: function(key) {
+                if (this.isExpired(key)) {
+                    this.remove(key);
+                }
+                return decode(this.ls.getItem(this._prefix(key)));
+            },
+            set: function(key, val, ttl) {
+                if (_.isNumber(ttl)) {
+                    this._safeSet(this._ttlKey(key), encode(now() + ttl));
+                } else {
+                    this.ls.removeItem(this._ttlKey(key));
+                }
+                return this._safeSet(this._prefix(key), encode(val));
+            },
+            remove: function(key) {
+                this.ls.removeItem(this._ttlKey(key));
+                this.ls.removeItem(this._prefix(key));
+                return this;
+            },
+            clear: function() {
+                var i, keys = gatherMatchingKeys(this.keyMatcher);
+                for (i = keys.length; i--;) {
+                    this.remove(keys[i]);
+                }
+                return this;
+            },
+            isExpired: function(key) {
+                var ttl = decode(this.ls.getItem(this._ttlKey(key)));
+                return _.isNumber(ttl) && now() > ttl ? true : false;
+            }
+        });
+        return PersistentStorage;
+
+        function now() {
+            return new Date().getTime();
+        }
+
+        function encode(val) {
+            return JSON.stringify(_.isUndefined(val) ? null : val);
+        }
+
+        function decode(val) {
+            return $.parseJSON(val);
+        }
+
+        function gatherMatchingKeys(keyMatcher) {
+            var i, key, keys = [],
+                len = LOCAL_STORAGE.length;
+            for (i = 0; i < len; i++) {
+                if ((key = LOCAL_STORAGE.key(i)).match(keyMatcher)) {
+                    keys.push(key.replace(keyMatcher, ""));
+                }
+            }
+            return keys;
+        }
+    }();
+    var Transport = function() {
+        "use strict";
+        var pendingRequestsCount = 0,
+            pendingRequests = {},
+            maxPendingRequests = 6,
+            sharedCache = new LruCache(10);
+
+        function Transport(o) {
+            o = o || {};
+            this.cancelled = false;
+            this.lastReq = null;
+            this._send = o.transport;
+            this._get = o.limiter ? o.limiter(this._get) : this._get;
+            this._cache = o.cache === false ? new LruCache(0) : sharedCache;
+        }
+        Transport.setMaxPendingRequests = function setMaxPendingRequests(num) {
+            maxPendingRequests = num;
+        };
+        Transport.resetCache = function resetCache() {
+            sharedCache.reset();
+        };
+        _.mixin(Transport.prototype, {
+            _fingerprint: function fingerprint(o) {
+                o = o || {};
+                return o.url + o.type + $.param(o.data || {});
+            },
+            _get: function(o, cb) {
+                var that = this,
+                    fingerprint, jqXhr;
+                fingerprint = this._fingerprint(o);
+                if (this.cancelled || fingerprint !== this.lastReq) {
+                    return;
+                }
+                if (jqXhr = pendingRequests[fingerprint]) {
+                    jqXhr.done(done).fail(fail);
+                } else if (pendingRequestsCount < maxPendingRequests) {
+                    pendingRequestsCount++;
+                    pendingRequests[fingerprint] = this._send(o).done(done).fail(fail).always(always);
+                } else {
+                    this.onDeckRequestArgs = [].slice.call(arguments, 0);
+                }
+
+                function done(resp) {
+                    cb(null, resp);
+                    that._cache.set(fingerprint, resp);
+                }
+
+                function fail() {
+                    cb(true);
+                }
+
+                function always() {
+                    pendingRequestsCount--;
+                    delete pendingRequests[fingerprint];
+                    if (that.onDeckRequestArgs) {
+                        that._get.apply(that, that.onDeckRequestArgs);
+                        that.onDeckRequestArgs = null;
+                    }
+                }
+            },
+            get: function(o, cb) {
+                var resp, fingerprint;
+                cb = cb || $.noop;
+                o = _.isString(o) ? {
+                    url: o
+                } : o || {};
+                fingerprint = this._fingerprint(o);
+                this.cancelled = false;
+                this.lastReq = fingerprint;
+                if (resp = this._cache.get(fingerprint)) {
+                    cb(null, resp);
+                } else {
+                    this._get(o, cb);
+                }
+            },
+            cancel: function() {
+                this.cancelled = true;
+            }
+        });
+        return Transport;
+    }();
+    var SearchIndex = window.SearchIndex = function() {
+        "use strict";
+        var CHILDREN = "c",
+            IDS = "i";
+
+        function SearchIndex(o) {
+            o = o || {};
+            if (!o.datumTokenizer || !o.queryTokenizer) {
+                $.error("datumTokenizer and queryTokenizer are both required");
+            }
+            this.identify = o.identify || _.stringify;
+            this.datumTokenizer = o.datumTokenizer;
+            this.queryTokenizer = o.queryTokenizer;
+            this.reset();
+        }
+        _.mixin(SearchIndex.prototype, {
+            bootstrap: function bootstrap(o) {
+                this.datums = o.datums;
+                this.trie = o.trie;
+            },
+            add: function(data) {
+                var that = this;
+                data = _.isArray(data) ? data : [data];
+                _.each(data, function(datum) {
+                    var id, tokens;
+                    that.datums[id = that.identify(datum)] = datum;
+                    tokens = normalizeTokens(that.datumTokenizer(datum));
+                    _.each(tokens, function(token) {
+                        var node, chars, ch;
+                        node = that.trie;
+                        chars = token.split("");
+                        while (ch = chars.shift()) {
+                            node = node[CHILDREN][ch] || (node[CHILDREN][ch] = newNode());
+                            node[IDS].push(id);
+                        }
+                    });
+                });
+            },
+            get: function get(ids) {
+                var that = this;
+                return _.map(ids, function(id) {
+                    return that.datums[id];
+                });
+            },
+            search: function search(query) {
+                var that = this,
+                    tokens, matches;
+                tokens = normalizeTokens(this.queryTokenizer(query));
+                _.each(tokens, function(token) {
+                    var node, chars, ch, ids;
+                    if (matches && matches.length === 0) {
+                        return false;
+                    }
+                    node = that.trie;
+                    chars = token.split("");
+                    while (node && (ch = chars.shift())) {
+                        node = node[CHILDREN][ch];
+                    }
+                    if (node && chars.length === 0) {
+                        ids = node[IDS].slice(0);
+                        matches = matches ? getIntersection(matches, ids) : ids;
+                    } else {
+                        matches = [];
+                        return false;
+                    }
+                });
+                return matches ? _.map(unique(matches), function(id) {
+                    return that.datums[id];
+                }) : [];
+            },
+            all: function all() {
+                var values = [];
+                for (var key in this.datums) {
+                    values.push(this.datums[key]);
+                }
+                return values;
+            },
+            reset: function reset() {
+                this.datums = {};
+                this.trie = newNode();
+            },
+            serialize: function serialize() {
+                return {
+                    datums: this.datums,
+                    trie: this.trie
+                };
+            }
+        });
+        return SearchIndex;
+
+        function normalizeTokens(tokens) {
+            tokens = _.filter(tokens, function(token) {
+                return !!token;
+            });
+            tokens = _.map(tokens, function(token) {
+                return token.toLowerCase();
+            });
+            return tokens;
+        }
+
+        function newNode() {
+            var node = {};
+            node[IDS] = [];
+            node[CHILDREN] = {};
+            return node;
+        }
+
+        function unique(array) {
+            var seen = {},
+                uniques = [];
+            for (var i = 0, len = array.length; i < len; i++) {
+                if (!seen[array[i]]) {
+                    seen[array[i]] = true;
+                    uniques.push(array[i]);
+                }
+            }
+            return uniques;
+        }
+
+        function getIntersection(arrayA, arrayB) {
+            var ai = 0,
+                bi = 0,
+                intersection = [];
+            arrayA = arrayA.sort();
+            arrayB = arrayB.sort();
+            var lenArrayA = arrayA.length,
+                lenArrayB = arrayB.length;
+            while (ai < lenArrayA && bi < lenArrayB) {
+                if (arrayA[ai] < arrayB[bi]) {
+                    ai++;
+                } else if (arrayA[ai] > arrayB[bi]) {
+                    bi++;
+                } else {
+                    intersection.push(arrayA[ai]);
+                    ai++;
+                    bi++;
+                }
+            }
+            return intersection;
+        }
+    }();
+    var Prefetch = function() {
+        "use strict";
+        var keys;
+        keys = {
+            data: "data",
+            protocol: "protocol",
+            thumbprint: "thumbprint"
+        };
+
+        function Prefetch(o) {
+            this.url = o.url;
+            this.ttl = o.ttl;
+            this.cache = o.cache;
+            this.prepare = o.prepare;
+            this.transform = o.transform;
+            this.transport = o.transport;
+            this.thumbprint = o.thumbprint;
+            this.storage = new PersistentStorage(o.cacheKey);
+        }
+        _.mixin(Prefetch.prototype, {
+            _settings: function settings() {
+                return {
+                    url: this.url,
+                    type: "GET",
+                    dataType: "json"
+                };
+            },
+            store: function store(data) {
+                if (!this.cache) {
+                    return;
+                }
+                this.storage.set(keys.data, data, this.ttl);
+                this.storage.set(keys.protocol, location.protocol, this.ttl);
+                this.storage.set(keys.thumbprint, this.thumbprint, this.ttl);
+            },
+            fromCache: function fromCache() {
+                var stored = {},
+                    isExpired;
+                if (!this.cache) {
+                    return null;
+                }
+                stored.data = this.storage.get(keys.data);
+                stored.protocol = this.storage.get(keys.protocol);
+                stored.thumbprint = this.storage.get(keys.thumbprint);
+                isExpired = stored.thumbprint !== this.thumbprint || stored.protocol !== location.protocol;
+                return stored.data && !isExpired ? stored.data : null;
+            },
+            fromNetwork: function(cb) {
+                var that = this,
+                    settings;
+                if (!cb) {
+                    return;
+                }
+                settings = this.prepare(this._settings());
+                this.transport(settings).fail(onError).done(onResponse);
+
+                function onError() {
+                    cb(true);
+                }
+
+                function onResponse(resp) {
+                    cb(null, that.transform(resp));
+                }
+            },
+            clear: function clear() {
+                this.storage.clear();
+                return this;
+            }
+        });
+        return Prefetch;
+    }();
+    var Remote = function() {
+        "use strict";
+
+        function Remote(o) {
+            this.url = o.url;
+            this.prepare = o.prepare;
+            this.transform = o.transform;
+            this.transport = new Transport({
+                cache: o.cache,
+                limiter: o.limiter,
+                transport: o.transport
+            });
+        }
+        _.mixin(Remote.prototype, {
+            _settings: function settings() {
+                return {
+                    url: this.url,
+                    type: "GET",
+                    dataType: "json"
+                };
+            },
+            get: function get(query, cb) {
+                var that = this,
+                    settings;
+                if (!cb) {
+                    return;
+                }
+                query = query || "";
+                settings = this.prepare(query, this._settings());
+                return this.transport.get(settings, onResponse);
+
+                function onResponse(err, resp) {
+                    err ? cb([]) : cb(that.transform(resp));
+                }
+            },
+            cancelLastRequest: function cancelLastRequest() {
+                this.transport.cancel();
+            }
+        });
+        return Remote;
+    }();
+    var oParser = function() {
+        "use strict";
+        return function parse(o) {
+            var defaults, sorter;
+            defaults = {
+                initialize: true,
+                identify: _.stringify,
+                datumTokenizer: null,
+                queryTokenizer: null,
+                sufficient: 5,
+                sorter: null,
+                local: [],
+                prefetch: null,
+                remote: null
+            };
+            o = _.mixin(defaults, o || {});
+            !o.datumTokenizer && $.error("datumTokenizer is required");
+            !o.queryTokenizer && $.error("queryTokenizer is required");
+            sorter = o.sorter;
+            o.sorter = sorter ? function(x) {
+                return x.sort(sorter);
+            } : _.identity;
+            o.local = _.isFunction(o.local) ? o.local() : o.local;
+            o.prefetch = parsePrefetch(o.prefetch);
+            o.remote = parseRemote(o.remote);
+            return o;
+        };
+
+        function parsePrefetch(o) {
+            var defaults;
+            if (!o) {
+                return null;
+            }
+            defaults = {
+                url: null,
+                ttl: 24 * 60 * 60 * 1e3,
+                cache: true,
+                cacheKey: null,
+                thumbprint: "",
+                prepare: _.identity,
+                transform: _.identity,
+                transport: null
+            };
+            o = _.isString(o) ? {
+                url: o
+            } : o;
+            o = _.mixin(defaults, o);
+            !o.url && $.error("prefetch requires url to be set");
+            o.transform = o.filter || o.transform;
+            o.cacheKey = o.cacheKey || o.url;
+            o.thumbprint = VERSION + o.thumbprint;
+            o.transport = o.transport ? callbackToDeferred(o.transport) : $.ajax;
+            return o;
+        }
+
+        function parseRemote(o) {
+            var defaults;
+            if (!o) {
+                return;
+            }
+            defaults = {
+                url: null,
+                cache: true,
+                prepare: null,
+                replace: null,
+                wildcard: null,
+                limiter: null,
+                rateLimitBy: "debounce",
+                rateLimitWait: 300,
+                transform: _.identity,
+                transport: null
+            };
+            o = _.isString(o) ? {
+                url: o
+            } : o;
+            o = _.mixin(defaults, o);
+            !o.url && $.error("remote requires url to be set");
+            o.transform = o.filter || o.transform;
+            o.prepare = toRemotePrepare(o);
+            o.limiter = toLimiter(o);
+            o.transport = o.transport ? callbackToDeferred(o.transport) : $.ajax;
+            delete o.replace;
+            delete o.wildcard;
+            delete o.rateLimitBy;
+            delete o.rateLimitWait;
+            return o;
+        }
+
+        function toRemotePrepare(o) {
+            var prepare, replace, wildcard;
+            prepare = o.prepare;
+            replace = o.replace;
+            wildcard = o.wildcard;
+            if (prepare) {
+                return prepare;
+            }
+            if (replace) {
+                prepare = prepareByReplace;
+            } else if (o.wildcard) {
+                prepare = prepareByWildcard;
+            } else {
+                prepare = idenityPrepare;
+            }
+            return prepare;
+
+            function prepareByReplace(query, settings) {
+                settings.url = replace(settings.url, query);
+                return settings;
+            }
+
+            function prepareByWildcard(query, settings) {
+                settings.url = settings.url.replace(wildcard, encodeURIComponent(query));
+                return settings;
+            }
+
+            function idenityPrepare(query, settings) {
+                return settings;
+            }
+        }
+
+        function toLimiter(o) {
+            var limiter, method, wait;
+            limiter = o.limiter;
+            method = o.rateLimitBy;
+            wait = o.rateLimitWait;
+            if (!limiter) {
+                limiter = /^throttle$/i.test(method) ? throttle(wait) : debounce(wait);
+            }
+            return limiter;
+
+            function debounce(wait) {
+                return function debounce(fn) {
+                    return _.debounce(fn, wait);
+                };
+            }
+
+            function throttle(wait) {
+                return function throttle(fn) {
+                    return _.throttle(fn, wait);
+                };
+            }
+        }
+
+        function callbackToDeferred(fn) {
+            return function wrapper(o) {
+                var deferred = $.Deferred();
+                fn(o, onSuccess, onError);
+                return deferred;
+
+                function onSuccess(resp) {
+                    _.defer(function() {
+                        deferred.resolve(resp);
+                    });
+                }
+
+                function onError(err) {
+                    _.defer(function() {
+                        deferred.reject(err);
+                    });
+                }
+            };
+        }
+    }();
+    var Bloodhound = function() {
+        "use strict";
+        var old;
+        old = window && window.Bloodhound;
+
+        function Bloodhound(o) {
+            o = oParser(o);
+            this.sorter = o.sorter;
+            this.identify = o.identify;
+            this.sufficient = o.sufficient;
+            this.local = o.local;
+            this.remote = o.remote ? new Remote(o.remote) : null;
+            this.prefetch = o.prefetch ? new Prefetch(o.prefetch) : null;
+            this.index = new SearchIndex({
+                identify: this.identify,
+                datumTokenizer: o.datumTokenizer,
+                queryTokenizer: o.queryTokenizer
+            });
+            o.initialize !== false && this.initialize();
+        }
+        Bloodhound.noConflict = function noConflict() {
+            window && (window.Bloodhound = old);
+            return Bloodhound;
+        };
+        Bloodhound.tokenizers = tokenizers;
+        _.mixin(Bloodhound.prototype, {
+            __ttAdapter: function ttAdapter() {
+                var that = this;
+                return this.remote ? withAsync : withoutAsync;
+
+                function withAsync(query, sync, async) {
+                    return that.search(query, sync, async);
+                }
+
+                function withoutAsync(query, sync) {
+                    return that.search(query, sync);
+                }
+            },
+            _loadPrefetch: function loadPrefetch() {
+                var that = this,
+                    deferred, serialized;
+                deferred = $.Deferred();
+                if (!this.prefetch) {
+                    deferred.resolve();
+                } else if (serialized = this.prefetch.fromCache()) {
+                    this.index.bootstrap(serialized);
+                    deferred.resolve();
+                } else {
+                    this.prefetch.fromNetwork(done);
+                }
+                return deferred.promise();
+
+                function done(err, data) {
+                    if (err) {
+                        return deferred.reject();
+                    }
+                    that.add(data);
+                    that.prefetch.store(that.index.serialize());
+                    deferred.resolve();
+                }
+            },
+            _initialize: function initialize() {
+                var that = this,
+                    deferred;
+                this.clear();
+                (this.initPromise = this._loadPrefetch()).done(addLocalToIndex);
+                return this.initPromise;
+
+                function addLocalToIndex() {
+                    that.add(that.local);
+                }
+            },
+            initialize: function initialize(force) {
+                return !this.initPromise || force ? this._initialize() : this.initPromise;
+            },
+            add: function add(data) {
+                this.index.add(data);
+                return this;
+            },
+            get: function get(ids) {
+                ids = _.isArray(ids) ? ids : [].slice.call(arguments);
+                return this.index.get(ids);
+            },
+            search: function search(query, sync, async) {
+                var that = this,
+                    local;
+                local = this.sorter(this.index.search(query));
+                sync(this.remote ? local.slice() : local);
+                if (this.remote && local.length < this.sufficient) {
+                    this.remote.get(query, processRemote);
+                } else if (this.remote) {
+                    this.remote.cancelLastRequest();
+                }
+                return this;
+
+                function processRemote(remote) {
+                    var nonDuplicates = [];
+                    _.each(remote, function(r) {
+                        !_.some(local, function(l) {
+                            return that.identify(r) === that.identify(l);
+                        }) && nonDuplicates.push(r);
+                    });
+                    async && async(nonDuplicates);
+                }
+            },
+            all: function all() {
+                return this.index.all();
+            },
+            clear: function clear() {
+                this.index.reset();
+                return this;
+            },
+            clearPrefetchCache: function clearPrefetchCache() {
+                this.prefetch && this.prefetch.clear();
+                return this;
+            },
+            clearRemoteCache: function clearRemoteCache() {
+                Transport.resetCache();
+                return this;
+            },
+            ttAdapter: function ttAdapter() {
+                return this.__ttAdapter();
+            }
+        });
+        return Bloodhound;
+    }();
+    return Bloodhound;
+});
+
+(function(root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define("typeahead.js", ["jquery"], function(a0) {
+            return factory(a0);
+        });
+    } else if (typeof exports === "object") {
+        module.exports = factory(require("jquery"));
+    } else {
+        factory(jQuery);
+    }
+})(this, function($) {
+    var _ = function() {
+        "use strict";
+        return {
+            isMsie: function() {
+                return /(msie|trident)/i.test(navigator.userAgent) ? navigator.userAgent.match(/(msie |rv:)(\d+(.\d+)?)/i)[2] : false;
+            },
+            isBlankString: function(str) {
+                return !str || /^\s*$/.test(str);
+            },
+            escapeRegExChars: function(str) {
+                return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+            },
+            isString: function(obj) {
+                return typeof obj === "string";
+            },
+            isNumber: function(obj) {
+                return typeof obj === "number";
+            },
+            isArray: $.isArray,
+            isFunction: $.isFunction,
+            isObject: $.isPlainObject,
+            isUndefined: function(obj) {
+                return typeof obj === "undefined";
+            },
+            isElement: function(obj) {
+                return !!(obj && obj.nodeType === 1);
+            },
+            isJQuery: function(obj) {
+                return obj instanceof $;
+            },
+            toStr: function toStr(s) {
+                return _.isUndefined(s) || s === null ? "" : s + "";
+            },
+            bind: $.proxy,
+            each: function(collection, cb) {
+                $.each(collection, reverseArgs);
+
+                function reverseArgs(index, value) {
+                    return cb(value, index);
+                }
+            },
+            map: $.map,
+            filter: $.grep,
+            every: function(obj, test) {
+                var result = true;
+                if (!obj) {
+                    return result;
+                }
+                $.each(obj, function(key, val) {
+                    if (!(result = test.call(null, val, key, obj))) {
+                        return false;
+                    }
+                });
+                return !!result;
+            },
+            some: function(obj, test) {
+                var result = false;
+                if (!obj) {
+                    return result;
+                }
+                $.each(obj, function(key, val) {
+                    if (result = test.call(null, val, key, obj)) {
+                        return false;
+                    }
+                });
+                return !!result;
+            },
+            mixin: $.extend,
+            identity: function(x) {
+                return x;
+            },
+            clone: function(obj) {
+                return $.extend(true, {}, obj);
+            },
+            getIdGenerator: function() {
+                var counter = 0;
+                return function() {
+                    return counter++;
+                };
+            },
+            templatify: function templatify(obj) {
+                return $.isFunction(obj) ? obj : template;
+
+                function template() {
+                    return String(obj);
+                }
+            },
+            defer: function(fn) {
+                setTimeout(fn, 0);
+            },
+            debounce: function(func, wait, immediate) {
+                var timeout, result;
+                return function() {
+                    var context = this,
+                        args = arguments,
+                        later, callNow;
+                    later = function() {
+                        timeout = null;
+                        if (!immediate) {
+                            result = func.apply(context, args);
+                        }
+                    };
+                    callNow = immediate && !timeout;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                    if (callNow) {
+                        result = func.apply(context, args);
+                    }
+                    return result;
+                };
+            },
+            throttle: function(func, wait) {
+                var context, args, timeout, result, previous, later;
+                previous = 0;
+                later = function() {
+                    previous = new Date();
+                    timeout = null;
+                    result = func.apply(context, args);
+                };
+                return function() {
+                    var now = new Date(),
+                        remaining = wait - (now - previous);
+                    context = this;
+                    args = arguments;
+                    if (remaining <= 0) {
+                        clearTimeout(timeout);
+                        timeout = null;
+                        previous = now;
+                        result = func.apply(context, args);
+                    } else if (!timeout) {
+                        timeout = setTimeout(later, remaining);
+                    }
+                    return result;
+                };
+            },
+            stringify: function(val) {
+                return _.isString(val) ? val : JSON.stringify(val);
+            },
+            noop: function() {}
+        };
+    }();
+    var WWW = function() {
+        "use strict";
+        var defaultClassNames = {
+            wrapper: "twitter-typeahead",
+            input: "tt-input",
+            hint: "tt-hint",
+            menu: "tt-menu",
+            dataset: "tt-dataset",
+            suggestion: "tt-suggestion",
+            selectable: "tt-selectable",
+            empty: "tt-empty",
+            open: "tt-open",
+            cursor: "tt-cursor",
+            highlight: "tt-highlight"
+        };
+        return build;
+
+        function build(o) {
+            var www, classes;
+            classes = _.mixin({}, defaultClassNames, o);
+            www = {
+                css: buildCss(),
+                classes: classes,
+                html: buildHtml(classes),
+                selectors: buildSelectors(classes)
+            };
+            return {
+                css: www.css,
+                html: www.html,
+                classes: www.classes,
+                selectors: www.selectors,
+                mixin: function(o) {
+                    _.mixin(o, www);
+                }
+            };
+        }
+
+        function buildHtml(c) {
+            return {
+                wrapper: '<span class="' + c.wrapper + '"></span>',
+                menu: '<div class="' + c.menu + '"></div>'
+            };
+        }
+
+        function buildSelectors(classes) {
+            var selectors = {};
+            _.each(classes, function(v, k) {
+                selectors[k] = "." + v;
+            });
+            return selectors;
+        }
+
+        function buildCss() {
+            var css = {
+                wrapper: {
+                    position: "relative",
+                    display: "inline-block"
+                },
+                hint: {
+                    position: "absolute",
+                    top: "0",
+                    left: "0",
+                    borderColor: "transparent",
+                    boxShadow: "none",
+                    opacity: "1"
+                },
+                input: {
+                    position: "relative",
+                    verticalAlign: "top",
+                    backgroundColor: "transparent"
+                },
+                inputWithNoHint: {
+                    position: "relative",
+                    verticalAlign: "top"
+                },
+                menu: {
+                    position: "absolute",
+                    top: "100%",
+                    left: "0",
+                    zIndex: "100",
+                    display: "none"
+                },
+                ltr: {
+                    left: "0",
+                    right: "auto"
+                },
+                rtl: {
+                    left: "auto",
+                    right: " 0"
+                }
+            };
+            if (_.isMsie()) {
+                _.mixin(css.input, {
+                    backgroundImage: "url(data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7)"
+                });
+            }
+            return css;
+        }
+    }();
+    var EventBus = function() {
+        "use strict";
+        var namespace, deprecationMap;
+        namespace = "typeahead:";
+        deprecationMap = {
+            render: "rendered",
+            cursorchange: "cursorchanged",
+            select: "selected",
+            autocomplete: "autocompleted"
+        };
+
+        function EventBus(o) {
+            if (!o || !o.el) {
+                $.error("EventBus initialized without el");
+            }
+            this.$el = $(o.el);
+        }
+        _.mixin(EventBus.prototype, {
+            _trigger: function(type, args) {
+                var $e;
+                $e = $.Event(namespace + type);
+                (args = args || []).unshift($e);
+                this.$el.trigger.apply(this.$el, args);
+                return $e;
+            },
+            before: function(type) {
+                var args, $e;
+                args = [].slice.call(arguments, 1);
+                $e = this._trigger("before" + type, args);
+                return $e.isDefaultPrevented();
+            },
+            trigger: function(type) {
+                var deprecatedType;
+                this._trigger(type, [].slice.call(arguments, 1));
+                if (deprecatedType = deprecationMap[type]) {
+                    this._trigger(deprecatedType, [].slice.call(arguments, 1));
+                }
+            }
+        });
+        return EventBus;
+    }();
+    var EventEmitter = function() {
+        "use strict";
+        var splitter = /\s+/,
+            nextTick = getNextTick();
+        return {
+            onSync: onSync,
+            onAsync: onAsync,
+            off: off,
+            trigger: trigger
+        };
+
+        function on(method, types, cb, context) {
+            var type;
+            if (!cb) {
+                return this;
+            }
+            types = types.split(splitter);
+            cb = context ? bindContext(cb, context) : cb;
+            this._callbacks = this._callbacks || {};
+            while (type = types.shift()) {
+                this._callbacks[type] = this._callbacks[type] || {
+                    sync: [],
+                    async: []
+                };
+                this._callbacks[type][method].push(cb);
+            }
+            return this;
+        }
+
+        function onAsync(types, cb, context) {
+            return on.call(this, "async", types, cb, context);
+        }
+
+        function onSync(types, cb, context) {
+            return on.call(this, "sync", types, cb, context);
+        }
+
+        function off(types) {
+            var type;
+            if (!this._callbacks) {
+                return this;
+            }
+            types = types.split(splitter);
+            while (type = types.shift()) {
+                delete this._callbacks[type];
+            }
+            return this;
+        }
+
+        function trigger(types) {
+            var type, callbacks, args, syncFlush, asyncFlush;
+            if (!this._callbacks) {
+                return this;
+            }
+            types = types.split(splitter);
+            args = [].slice.call(arguments, 1);
+            while ((type = types.shift()) && (callbacks = this._callbacks[type])) {
+                syncFlush = getFlush(callbacks.sync, this, [type].concat(args));
+                asyncFlush = getFlush(callbacks.async, this, [type].concat(args));
+                syncFlush() && nextTick(asyncFlush);
+            }
+            return this;
+        }
+
+        function getFlush(callbacks, context, args) {
+            return flush;
+
+            function flush() {
+                var cancelled;
+                for (var i = 0, len = callbacks.length; !cancelled && i < len; i += 1) {
+                    cancelled = callbacks[i].apply(context, args) === false;
+                }
+                return !cancelled;
+            }
+        }
+
+        function getNextTick() {
+            var nextTickFn;
+            if (window.setImmediate) {
+                nextTickFn = function nextTickSetImmediate(fn) {
+                    setImmediate(function() {
+                        fn();
+                    });
+                };
+            } else {
+                nextTickFn = function nextTickSetTimeout(fn) {
+                    setTimeout(function() {
+                        fn();
+                    }, 0);
+                };
+            }
+            return nextTickFn;
+        }
+
+        function bindContext(fn, context) {
+            return fn.bind ? fn.bind(context) : function() {
+                fn.apply(context, [].slice.call(arguments, 0));
+            };
+        }
+    }();
+    var highlight = function(doc) {
+        "use strict";
+        var defaults = {
+            node: null,
+            pattern: null,
+            tagName: "strong",
+            className: null,
+            wordsOnly: false,
+            caseSensitive: false
+        };
+        return function hightlight(o) {
+            var regex;
+            o = _.mixin({}, defaults, o);
+            if (!o.node || !o.pattern) {
+                return;
+            }
+            o.pattern = _.isArray(o.pattern) ? o.pattern : [o.pattern];
+            regex = getRegex(o.pattern, o.caseSensitive, o.wordsOnly);
+            traverse(o.node, hightlightTextNode);
+
+            function hightlightTextNode(textNode) {
+                var match, patternNode, wrapperNode;
+                if (match = regex.exec(textNode.data)) {
+                    wrapperNode = doc.createElement(o.tagName);
+                    o.className && (wrapperNode.className = o.className);
+                    patternNode = textNode.splitText(match.index);
+                    patternNode.splitText(match[0].length);
+                    wrapperNode.appendChild(patternNode.cloneNode(true));
+                    textNode.parentNode.replaceChild(wrapperNode, patternNode);
+                }
+                return !!match;
+            }
+
+            function traverse(el, hightlightTextNode) {
+                var childNode, TEXT_NODE_TYPE = 3;
+                for (var i = 0; i < el.childNodes.length; i++) {
+                    childNode = el.childNodes[i];
+                    if (childNode.nodeType === TEXT_NODE_TYPE) {
+                        i += hightlightTextNode(childNode) ? 1 : 0;
+                    } else {
+                        traverse(childNode, hightlightTextNode);
+                    }
+                }
+            }
+        };
+
+        function getRegex(patterns, caseSensitive, wordsOnly) {
+            var escapedPatterns = [],
+                regexStr;
+            for (var i = 0, len = patterns.length; i < len; i++) {
+                escapedPatterns.push(_.escapeRegExChars(patterns[i]));
+            }
+            regexStr = wordsOnly ? "\\b(" + escapedPatterns.join("|") + ")\\b" : "(" + escapedPatterns.join("|") + ")";
+            return caseSensitive ? new RegExp(regexStr) : new RegExp(regexStr, "i");
+        }
+    }(window.document);
+    var Input = function() {
+        "use strict";
+        var specialKeyCodeMap;
+        specialKeyCodeMap = {
+            9: "tab",
+            27: "esc",
+            37: "left",
+            39: "right",
+            13: "enter",
+            38: "up",
+            40: "down"
+        };
+
+        function Input(o, www) {
+            o = o || {};
+            if (!o.input) {
+                $.error("input is missing");
+            }
+            www.mixin(this);
+            this.$hint = $(o.hint);
+            this.$input = $(o.input);
+            this.query = this.$input.val();
+            this.queryWhenFocused = this.hasFocus() ? this.query : null;
+            this.$overflowHelper = buildOverflowHelper(this.$input);
+            this._checkLanguageDirection();
+            if (this.$hint.length === 0) {
+                this.setHint = this.getHint = this.clearHint = this.clearHintIfInvalid = _.noop;
+            }
+        }
+        Input.normalizeQuery = function(str) {
+            return _.toStr(str).replace(/^\s*/g, "").replace(/\s{2,}/g, " ");
+        };
+        _.mixin(Input.prototype, EventEmitter, {
+            _onBlur: function onBlur() {
+                this.resetInputValue();
+                this.trigger("blurred");
+            },
+            _onFocus: function onFocus() {
+                this.queryWhenFocused = this.query;
+                this.trigger("focused");
+            },
+            _onKeydown: function onKeydown($e) {
+                var keyName = specialKeyCodeMap[$e.which || $e.keyCode];
+                this._managePreventDefault(keyName, $e);
+                if (keyName && this._shouldTrigger(keyName, $e)) {
+                    this.trigger(keyName + "Keyed", $e);
+                }
+            },
+            _onInput: function onInput() {
+                this._setQuery(this.getInputValue());
+                this.clearHintIfInvalid();
+                this._checkLanguageDirection();
+            },
+            _managePreventDefault: function managePreventDefault(keyName, $e) {
+                var preventDefault;
+                switch (keyName) {
+                    case "up":
+                    case "down":
+                        preventDefault = !withModifier($e);
+                        break;
+
+                    default:
+                        preventDefault = false;
+                }
+                preventDefault && $e.preventDefault();
+            },
+            _shouldTrigger: function shouldTrigger(keyName, $e) {
+                var trigger;
+                switch (keyName) {
+                    case "tab":
+                        trigger = !withModifier($e);
+                        break;
+
+                    default:
+                        trigger = true;
+                }
+                return trigger;
+            },
+            _checkLanguageDirection: function checkLanguageDirection() {
+                var dir = (this.$input.css("direction") || "ltr").toLowerCase();
+                if (this.dir !== dir) {
+                    this.dir = dir;
+                    this.$hint.attr("dir", dir);
+                    this.trigger("langDirChanged", dir);
+                }
+            },
+            _setQuery: function setQuery(val, silent) {
+                var areEquivalent, hasDifferentWhitespace;
+                areEquivalent = areQueriesEquivalent(val, this.query);
+                hasDifferentWhitespace = areEquivalent ? this.query.length !== val.length : false;
+                this.query = val;
+                if (!silent && !areEquivalent) {
+                    this.trigger("queryChanged", this.query);
+                } else if (!silent && hasDifferentWhitespace) {
+                    this.trigger("whitespaceChanged", this.query);
+                }
+            },
+            bind: function() {
+                var that = this,
+                    onBlur, onFocus, onKeydown, onInput;
+                onBlur = _.bind(this._onBlur, this);
+                onFocus = _.bind(this._onFocus, this);
+                onKeydown = _.bind(this._onKeydown, this);
+                onInput = _.bind(this._onInput, this);
+                this.$input.on("blur.tt", onBlur).on("focus.tt", onFocus).on("keydown.tt", onKeydown);
+                if (!_.isMsie() || _.isMsie() > 9) {
+                    this.$input.on("input.tt", onInput);
+                } else {
+                    this.$input.on("keydown.tt keypress.tt cut.tt paste.tt", function($e) {
+                        if (specialKeyCodeMap[$e.which || $e.keyCode]) {
+                            return;
+                        }
+                        _.defer(_.bind(that._onInput, that, $e));
+                    });
+                }
+                return this;
+            },
+            focus: function focus() {
+                this.$input.focus();
+            },
+            blur: function blur() {
+                this.$input.blur();
+            },
+            getLangDir: function getLangDir() {
+                return this.dir;
+            },
+            getQuery: function getQuery() {
+                return this.query || "";
+            },
+            setQuery: function setQuery(val, silent) {
+                this.setInputValue(val);
+                this._setQuery(val, silent);
+            },
+            hasQueryChangedSinceLastFocus: function hasQueryChangedSinceLastFocus() {
+                return this.query !== this.queryWhenFocused;
+            },
+            getInputValue: function getInputValue() {
+                return this.$input.val();
+            },
+            setInputValue: function setInputValue(value) {
+                this.$input.val(value);
+                this.clearHintIfInvalid();
+                this._checkLanguageDirection();
+            },
+            resetInputValue: function resetInputValue() {
+                this.setInputValue(this.query);
+            },
+            getHint: function getHint() {
+                return this.$hint.val();
+            },
+            setHint: function setHint(value) {
+                this.$hint.val(value);
+            },
+            clearHint: function clearHint() {
+                this.setHint("");
+            },
+            clearHintIfInvalid: function clearHintIfInvalid() {
+                var val, hint, valIsPrefixOfHint, isValid;
+                val = this.getInputValue();
+                hint = this.getHint();
+                valIsPrefixOfHint = val !== hint && hint.indexOf(val) === 0;
+                isValid = val !== "" && valIsPrefixOfHint && !this.hasOverflow();
+                !isValid && this.clearHint();
+            },
+            hasFocus: function hasFocus() {
+                return this.$input.is(":focus");
+            },
+            hasOverflow: function hasOverflow() {
+                var constraint = this.$input.width() - 2;
+                this.$overflowHelper.text(this.getInputValue());
+                return this.$overflowHelper.width() >= constraint;
+            },
+            isCursorAtEnd: function() {
+                var valueLength, selectionStart, range;
+                valueLength = this.$input.val().length;
+                selectionStart = this.$input[0].selectionStart;
+                if (_.isNumber(selectionStart)) {
+                    return selectionStart === valueLength;
+                } else if (document.selection) {
+                    range = document.selection.createRange();
+                    range.moveStart("character", -valueLength);
+                    return valueLength === range.text.length;
+                }
+                return true;
+            },
+            destroy: function destroy() {
+                this.$hint.off(".tt");
+                this.$input.off(".tt");
+                this.$overflowHelper.remove();
+                this.$hint = this.$input = this.$overflowHelper = $("<div>");
+            }
+        });
+        return Input;
+
+        function buildOverflowHelper($input) {
+            return $('<pre aria-hidden="true"></pre>').css({
+                position: "absolute",
+                visibility: "hidden",
+                whiteSpace: "pre",
+                fontFamily: $input.css("font-family"),
+                fontSize: $input.css("font-size"),
+                fontStyle: $input.css("font-style"),
+                fontVariant: $input.css("font-variant"),
+                fontWeight: $input.css("font-weight"),
+                wordSpacing: $input.css("word-spacing"),
+                letterSpacing: $input.css("letter-spacing"),
+                textIndent: $input.css("text-indent"),
+                textRendering: $input.css("text-rendering"),
+                textTransform: $input.css("text-transform")
+            }).insertAfter($input);
+        }
+
+        function areQueriesEquivalent(a, b) {
+            return Input.normalizeQuery(a) === Input.normalizeQuery(b);
+        }
+
+        function withModifier($e) {
+            return $e.altKey || $e.ctrlKey || $e.metaKey || $e.shiftKey;
+        }
+    }();
+    var Dataset = function() {
+        "use strict";
+        var keys, nameGenerator;
+        keys = {
+            val: "tt-selectable-display",
+            obj: "tt-selectable-object"
+        };
+        nameGenerator = _.getIdGenerator();
+
+        function Dataset(o, www) {
+            o = o || {};
+            o.templates = o.templates || {};
+            o.templates.notFound = o.templates.notFound || o.templates.empty;
+            if (!o.source) {
+                $.error("missing source");
+            }
+            if (!o.node) {
+                $.error("missing node");
+            }
+            if (o.name && !isValidName(o.name)) {
+                $.error("invalid dataset name: " + o.name);
+            }
+            www.mixin(this);
+            this.highlight = !!o.highlight;
+            this.name = o.name || nameGenerator();
+            this.limit = o.limit || 5;
+            this.displayFn = getDisplayFn(o.display || o.displayKey);
+            this.templates = getTemplates(o.templates, this.displayFn);
+            this.source = o.source.__ttAdapter ? o.source.__ttAdapter() : o.source;
+            this.async = _.isUndefined(o.async) ? this.source.length > 2 : !!o.async;
+            this._resetLastSuggestion();
+            this.$el = $(o.node).addClass(this.classes.dataset).addClass(this.classes.dataset + "-" + this.name);
+        }
+        Dataset.extractData = function extractData(el) {
+            var $el = $(el);
+            if ($el.data(keys.obj)) {
+                return {
+                    val: $el.data(keys.val) || "",
+                    obj: $el.data(keys.obj) || null
+                };
+            }
+            return null;
+        };
+        _.mixin(Dataset.prototype, EventEmitter, {
+            _overwrite: function overwrite(query, suggestions) {
+                suggestions = suggestions || [];
+                if (suggestions.length) {
+                    this._renderSuggestions(query, suggestions);
+                } else if (this.async && this.templates.pending) {
+                    this._renderPending(query);
+                } else if (!this.async && this.templates.notFound) {
+                    this._renderNotFound(query);
+                } else {
+                    this._empty();
+                }
+                this.trigger("rendered", this.name, suggestions, false);
+            },
+            _append: function append(query, suggestions) {
+                suggestions = suggestions || [];
+                if (suggestions.length && this.$lastSuggestion.length) {
+                    this._appendSuggestions(query, suggestions);
+                } else if (suggestions.length) {
+                    this._renderSuggestions(query, suggestions);
+                } else if (!this.$lastSuggestion.length && this.templates.notFound) {
+                    this._renderNotFound(query);
+                }
+                this.trigger("rendered", this.name, suggestions, true);
+            },
+            _renderSuggestions: function renderSuggestions(query, suggestions) {
+                var $fragment;
+                $fragment = this._getSuggestionsFragment(query, suggestions);
+                this.$lastSuggestion = $fragment.children().last();
+                this.$el.html($fragment).prepend(this._getHeader(query, suggestions)).append(this._getFooter(query, suggestions));
+            },
+            _appendSuggestions: function appendSuggestions(query, suggestions) {
+                var $fragment, $lastSuggestion;
+                $fragment = this._getSuggestionsFragment(query, suggestions);
+                $lastSuggestion = $fragment.children().last();
+                this.$lastSuggestion.after($fragment);
+                this.$lastSuggestion = $lastSuggestion;
+            },
+            _renderPending: function renderPending(query) {
+                var template = this.templates.pending;
+                this._resetLastSuggestion();
+                template && this.$el.html(template({
+                    query: query,
+                    dataset: this.name
+                }));
+            },
+            _renderNotFound: function renderNotFound(query) {
+                var template = this.templates.notFound;
+                this._resetLastSuggestion();
+                template && this.$el.html(template({
+                    query: query,
+                    dataset: this.name
+                }));
+            },
+            _empty: function empty() {
+                this.$el.empty();
+                this._resetLastSuggestion();
+            },
+            _getSuggestionsFragment: function getSuggestionsFragment(query, suggestions) {
+                var that = this,
+                    fragment;
+                fragment = document.createDocumentFragment();
+                _.each(suggestions, function getSuggestionNode(suggestion) {
+                    var $el, context;
+                    context = that._injectQuery(query, suggestion);
+                    $el = $(that.templates.suggestion(context)).data(keys.obj, suggestion).data(keys.val, that.displayFn(suggestion)).addClass(that.classes.suggestion + " " + that.classes.selectable);
+                    fragment.appendChild($el[0]);
+                });
+                this.highlight && highlight({
+                    className: this.classes.highlight,
+                    node: fragment,
+                    pattern: query
+                });
+                return $(fragment);
+            },
+            _getFooter: function getFooter(query, suggestions) {
+                return this.templates.footer ? this.templates.footer({
+                    query: query,
+                    suggestions: suggestions,
+                    dataset: this.name
+                }) : null;
+            },
+            _getHeader: function getHeader(query, suggestions) {
+                return this.templates.header ? this.templates.header({
+                    query: query,
+                    suggestions: suggestions,
+                    dataset: this.name
+                }) : null;
+            },
+            _resetLastSuggestion: function resetLastSuggestion() {
+                this.$lastSuggestion = $();
+            },
+            _injectQuery: function injectQuery(query, obj) {
+                return _.isObject(obj) ? _.mixin({
+                    _query: query
+                }, obj) : obj;
+            },
+            update: function update(query) {
+                var that = this,
+                    canceled = false,
+                    syncCalled = false,
+                    rendered = 0;
+                this.cancel();
+                this.cancel = function cancel() {
+                    canceled = true;
+                    that.cancel = $.noop;
+                    that.async && that.trigger("asyncCanceled", query);
+                };
+                this.source(query, sync, async);
+                !syncCalled && sync([]);
+
+                function sync(suggestions) {
+                    if (syncCalled) {
+                        return;
+                    }
+                    syncCalled = true;
+                    suggestions = (suggestions || []).slice(0, that.limit);
+                    rendered = suggestions.length;
+                    that._overwrite(query, suggestions);
+                    if (rendered < that.limit && that.async) {
+                        that.trigger("asyncRequested", query);
+                    }
+                }
+
+                function async(suggestions) {
+                    suggestions = suggestions || [];
+                    if (!canceled && rendered < that.limit) {
+                        that.cancel = $.noop;
+                        rendered += suggestions.length;
+                        that._append(query, suggestions.slice(0, that.limit - rendered));
+                        that.async && that.trigger("asyncReceived", query);
+                    }
+                }
+            },
+            cancel: $.noop,
+            clear: function clear() {
+                this._empty();
+                this.cancel();
+                this.trigger("cleared");
+            },
+            isEmpty: function isEmpty() {
+                return this.$el.is(":empty");
+            },
+            destroy: function destroy() {
+                this.$el = $("<div>");
+            }
+        });
+        return Dataset;
+
+        function getDisplayFn(display) {
+            display = display || _.stringify;
+            return _.isFunction(display) ? display : displayFn;
+
+            function displayFn(obj) {
+                return obj[display];
+            }
+        }
+
+        function getTemplates(templates, displayFn) {
+            return {
+                notFound: templates.notFound && _.templatify(templates.notFound),
+                pending: templates.pending && _.templatify(templates.pending),
+                header: templates.header && _.templatify(templates.header),
+                footer: templates.footer && _.templatify(templates.footer),
+                suggestion: templates.suggestion || suggestionTemplate
+            };
+
+            function suggestionTemplate(context) {
+                return $("<div>").text(displayFn(context));
+            }
+        }
+
+        function isValidName(str) {
+            return /^[_a-zA-Z0-9-]+$/.test(str);
+        }
+    }();
+    var Menu = function() {
+        "use strict";
+
+        function Menu(o, www) {
+            var that = this;
+            o = o || {};
+            if (!o.node) {
+                $.error("node is required");
+            }
+            www.mixin(this);
+            this.$node = $(o.node);
+            this.query = null;
+            this.datasets = _.map(o.datasets, initializeDataset);
+
+            function initializeDataset(oDataset) {
+                var node = that.$node.find(oDataset.node).first();
+                oDataset.node = node.length ? node : $("<div>").appendTo(that.$node);
+                return new Dataset(oDataset, www);
+            }
+        }
+        _.mixin(Menu.prototype, EventEmitter, {
+            _onSelectableClick: function onSelectableClick($e) {
+                this.trigger("selectableClicked", $($e.currentTarget));
+            },
+            _onRendered: function onRendered(type, dataset, suggestions, async) {
+                this.$node.toggleClass(this.classes.empty, this._allDatasetsEmpty());
+                this.trigger("datasetRendered", dataset, suggestions, async);
+            },
+            _onCleared: function onCleared() {
+                this.$node.toggleClass(this.classes.empty, this._allDatasetsEmpty());
+                this.trigger("datasetCleared");
+            },
+            _propagate: function propagate() {
+                this.trigger.apply(this, arguments);
+            },
+            _allDatasetsEmpty: function allDatasetsEmpty() {
+                return _.every(this.datasets, isDatasetEmpty);
+
+                function isDatasetEmpty(dataset) {
+                    return dataset.isEmpty();
+                }
+            },
+            _getSelectables: function getSelectables() {
+                return this.$node.find(this.selectors.selectable);
+            },
+            _removeCursor: function _removeCursor() {
+                var $selectable = this.getActiveSelectable();
+                $selectable && $selectable.removeClass(this.classes.cursor);
+            },
+            _ensureVisible: function ensureVisible($el) {
+                var elTop, elBottom, nodeScrollTop, nodeHeight;
+                elTop = $el.position().top;
+                elBottom = elTop + $el.outerHeight(true);
+                nodeScrollTop = this.$node.scrollTop();
+                nodeHeight = this.$node.height() + parseInt(this.$node.css("paddingTop"), 10) + parseInt(this.$node.css("paddingBottom"), 10);
+                if (elTop < 0) {
+                    this.$node.scrollTop(nodeScrollTop + elTop);
+                } else if (nodeHeight < elBottom) {
+                    this.$node.scrollTop(nodeScrollTop + (elBottom - nodeHeight));
+                }
+            },
+            bind: function() {
+                var that = this,
+                    onSelectableClick;
+                onSelectableClick = _.bind(this._onSelectableClick, this);
+                this.$node.on("click.tt", this.selectors.selectable, onSelectableClick);
+                _.each(this.datasets, function(dataset) {
+                    dataset.onSync("asyncRequested", that._propagate, that).onSync("asyncCanceled", that._propagate, that).onSync("asyncReceived", that._propagate, that).onSync("rendered", that._onRendered, that).onSync("cleared", that._onCleared, that);
+                });
+                return this;
+            },
+            isOpen: function isOpen() {
+                return this.$node.hasClass(this.classes.open);
+            },
+            open: function open() {
+                this.$node.addClass(this.classes.open);
+            },
+            close: function close() {
+                this.$node.removeClass(this.classes.open);
+                this._removeCursor();
+            },
+            setLanguageDirection: function setLanguageDirection(dir) {
+                this.$node.attr("dir", dir);
+            },
+            selectableRelativeToCursor: function selectableRelativeToCursor(delta) {
+                var $selectables, $oldCursor, oldIndex, newIndex;
+                $oldCursor = this.getActiveSelectable();
+                $selectables = this._getSelectables();
+                oldIndex = $oldCursor ? $selectables.index($oldCursor) : -1;
+                newIndex = oldIndex + delta;
+                newIndex = (newIndex + 1) % ($selectables.length + 1) - 1;
+                newIndex = newIndex < -1 ? $selectables.length - 1 : newIndex;
+                return newIndex === -1 ? null : $selectables.eq(newIndex);
+            },
+            setCursor: function setCursor($selectable) {
+                this._removeCursor();
+                if ($selectable = $selectable && $selectable.first()) {
+                    $selectable.addClass(this.classes.cursor);
+                    this._ensureVisible($selectable);
+                }
+            },
+            getSelectableData: function getSelectableData($el) {
+                return $el && $el.length ? Dataset.extractData($el) : null;
+            },
+            getActiveSelectable: function getActiveSelectable() {
+                var $selectable = this._getSelectables().filter(this.selectors.cursor).first();
+                return $selectable.length ? $selectable : null;
+            },
+            getTopSelectable: function getTopSelectable() {
+                var $selectable = this._getSelectables().first();
+                return $selectable.length ? $selectable : null;
+            },
+            update: function update(query) {
+                var isValidUpdate = query !== this.query;
+                if (isValidUpdate) {
+                    this.query = query;
+                    _.each(this.datasets, updateDataset);
+                }
+                return isValidUpdate;
+
+                function updateDataset(dataset) {
+                    dataset.update(query);
+                }
+            },
+            empty: function empty() {
+                _.each(this.datasets, clearDataset);
+                this.query = null;
+                this.$node.addClass(this.classes.empty);
+
+                function clearDataset(dataset) {
+                    dataset.clear();
+                }
+            },
+            destroy: function destroy() {
+                this.$node.off(".tt");
+                this.$node = $("<div>");
+                _.each(this.datasets, destroyDataset);
+
+                function destroyDataset(dataset) {
+                    dataset.destroy();
+                }
+            }
+        });
+        return Menu;
+    }();
+    var DefaultMenu = function() {
+        "use strict";
+        var s = Menu.prototype;
+
+        function DefaultMenu() {
+            Menu.apply(this, [].slice.call(arguments, 0));
+        }
+        _.mixin(DefaultMenu.prototype, Menu.prototype, {
+            open: function open() {
+                !this._allDatasetsEmpty() && this._show();
+                return s.open.apply(this, [].slice.call(arguments, 0));
+            },
+            close: function close() {
+                this._hide();
+                return s.close.apply(this, [].slice.call(arguments, 0));
+            },
+            _onRendered: function onRendered() {
+                if (this._allDatasetsEmpty()) {
+                    this._hide();
+                } else {
+                    this.isOpen() && this._show();
+                }
+                return s._onRendered.apply(this, [].slice.call(arguments, 0));
+            },
+            _onCleared: function onCleared() {
+                if (this._allDatasetsEmpty()) {
+                    this._hide();
+                } else {
+                    this.isOpen() && this._show();
+                }
+                return s._onCleared.apply(this, [].slice.call(arguments, 0));
+            },
+            setLanguageDirection: function setLanguageDirection(dir) {
+                this.$node.css(dir === "ltr" ? this.css.ltr : this.css.rtl);
+                return s.setLanguageDirection.apply(this, [].slice.call(arguments, 0));
+            },
+            _hide: function hide() {
+                this.$node.hide();
+            },
+            _show: function show() {
+                this.$node.css("display", "block");
+            }
+        });
+        return DefaultMenu;
+    }();
+    var Typeahead = function() {
+        "use strict";
+
+        function Typeahead(o, www) {
+            var onFocused, onBlurred, onEnterKeyed, onTabKeyed, onEscKeyed, onUpKeyed, onDownKeyed, onLeftKeyed, onRightKeyed, onQueryChanged, onWhitespaceChanged;
+            o = o || {};
+            if (!o.input) {
+                $.error("missing input");
+            }
+            if (!o.menu) {
+                $.error("missing menu");
+            }
+            if (!o.eventBus) {
+                $.error("missing event bus");
+            }
+            www.mixin(this);
+            this.eventBus = o.eventBus;
+            this.minLength = _.isNumber(o.minLength) ? o.minLength : 1;
+            this.input = o.input;
+            this.menu = o.menu;
+            this.enabled = true;
+            this.active = false;
+            this.input.hasFocus() && this.activate();
+            this.dir = this.input.getLangDir();
+            this._hacks();
+            this.menu.bind().onSync("selectableClicked", this._onSelectableClicked, this).onSync("asyncRequested", this._onAsyncRequested, this).onSync("asyncCanceled", this._onAsyncCanceled, this).onSync("asyncReceived", this._onAsyncReceived, this).onSync("datasetRendered", this._onDatasetRendered, this).onSync("datasetCleared", this._onDatasetCleared, this);
+            onFocused = c(this, "activate", "open", "_onFocused");
+            onBlurred = c(this, "deactivate", "_onBlurred");
+            onEnterKeyed = c(this, "isActive", "isOpen", "_onEnterKeyed");
+            onTabKeyed = c(this, "isActive", "isOpen", "_onTabKeyed");
+            onEscKeyed = c(this, "isActive", "_onEscKeyed");
+            onUpKeyed = c(this, "isActive", "open", "_onUpKeyed");
+            onDownKeyed = c(this, "isActive", "open", "_onDownKeyed");
+            onLeftKeyed = c(this, "isActive", "isOpen", "_onLeftKeyed");
+            onRightKeyed = c(this, "isActive", "isOpen", "_onRightKeyed");
+            onQueryChanged = c(this, "_openIfActive", "_onQueryChanged");
+            onWhitespaceChanged = c(this, "_openIfActive", "_onWhitespaceChanged");
+            this.input.bind().onSync("focused", onFocused, this).onSync("blurred", onBlurred, this).onSync("enterKeyed", onEnterKeyed, this).onSync("tabKeyed", onTabKeyed, this).onSync("escKeyed", onEscKeyed, this).onSync("upKeyed", onUpKeyed, this).onSync("downKeyed", onDownKeyed, this).onSync("leftKeyed", onLeftKeyed, this).onSync("rightKeyed", onRightKeyed, this).onSync("queryChanged", onQueryChanged, this).onSync("whitespaceChanged", onWhitespaceChanged, this).onSync("langDirChanged", this._onLangDirChanged, this);
+        }
+        _.mixin(Typeahead.prototype, {
+            _hacks: function hacks() {
+                var $input, $menu;
+                $input = this.input.$input || $("<div>");
+                $menu = this.menu.$node || $("<div>");
+                $input.on("blur.tt", function($e) {
+                    var active, isActive, hasActive;
+                    active = document.activeElement;
+                    isActive = $menu.is(active);
+                    hasActive = $menu.has(active).length > 0;
+                    if (_.isMsie() && (isActive || hasActive)) {
+                        $e.preventDefault();
+                        $e.stopImmediatePropagation();
+                        _.defer(function() {
+                            $input.focus();
+                        });
+                    }
+                });
+                $menu.on("mousedown.tt", function($e) {
+                    $e.preventDefault();
+                });
+            },
+            _onSelectableClicked: function onSelectableClicked(type, $el) {
+                this.select($el);
+            },
+            _onDatasetCleared: function onDatasetCleared() {
+                this._updateHint();
+            },
+            _onDatasetRendered: function onDatasetRendered(type, dataset, suggestions, async) {
+                this._updateHint();
+                this.eventBus.trigger("render", suggestions, async, dataset);
+            },
+            _onAsyncRequested: function onAsyncRequested(type, dataset, query) {
+                this.eventBus.trigger("asyncrequest", query, dataset);
+            },
+            _onAsyncCanceled: function onAsyncCanceled(type, dataset, query) {
+                this.eventBus.trigger("asynccancel", query, dataset);
+            },
+            _onAsyncReceived: function onAsyncReceived(type, dataset, query) {
+                this.eventBus.trigger("asyncreceive", query, dataset);
+            },
+            _onFocused: function onFocused() {
+                this._minLengthMet() && this.menu.update(this.input.getQuery());
+            },
+            _onBlurred: function onBlurred() {
+                if (this.input.hasQueryChangedSinceLastFocus()) {
+                    this.eventBus.trigger("change", this.input.getQuery());
+                }
+            },
+            _onEnterKeyed: function onEnterKeyed(type, $e) {
+                var $selectable;
+                if ($selectable = this.menu.getActiveSelectable()) {
+                    this.select($selectable) && $e.preventDefault();
+                }
+            },
+            _onTabKeyed: function onTabKeyed(type, $e) {
+                var $selectable;
+                if ($selectable = this.menu.getActiveSelectable()) {
+                    this.select($selectable) && $e.preventDefault();
+                } else if ($selectable = this.menu.getTopSelectable()) {
+                    this.autocomplete($selectable) && $e.preventDefault();
+                }
+            },
+            _onEscKeyed: function onEscKeyed() {
+                this.close();
+            },
+            _onUpKeyed: function onUpKeyed() {
+                this.moveCursor(-1);
+            },
+            _onDownKeyed: function onDownKeyed() {
+                this.moveCursor(+1);
+            },
+            _onLeftKeyed: function onLeftKeyed() {
+                if (this.dir === "rtl" && this.input.isCursorAtEnd()) {
+                    this.autocomplete(this.menu.getTopSelectable());
+                }
+            },
+            _onRightKeyed: function onRightKeyed() {
+                if (this.dir === "ltr" && this.input.isCursorAtEnd()) {
+                    this.autocomplete(this.menu.getTopSelectable());
+                }
+            },
+            _onQueryChanged: function onQueryChanged(e, query) {
+                this._minLengthMet(query) ? this.menu.update(query) : this.menu.empty();
+            },
+            _onWhitespaceChanged: function onWhitespaceChanged() {
+                this._updateHint();
+            },
+            _onLangDirChanged: function onLangDirChanged(e, dir) {
+                if (this.dir !== dir) {
+                    this.dir = dir;
+                    this.menu.setLanguageDirection(dir);
+                }
+            },
+            _openIfActive: function openIfActive() {
+                this.isActive() && this.open();
+            },
+            _minLengthMet: function minLengthMet(query) {
+                query = _.isString(query) ? query : this.input.getQuery() || "";
+                return query.length >= this.minLength;
+            },
+            _updateHint: function updateHint() {
+                var $selectable, data, val, query, escapedQuery, frontMatchRegEx, match;
+                $selectable = this.menu.getTopSelectable();
+                data = this.menu.getSelectableData($selectable);
+                val = this.input.getInputValue();
+                if (data && !_.isBlankString(val) && !this.input.hasOverflow()) {
+                    query = Input.normalizeQuery(val);
+                    escapedQuery = _.escapeRegExChars(query);
+                    frontMatchRegEx = new RegExp("^(?:" + escapedQuery + ")(.+$)", "i");
+                    match = frontMatchRegEx.exec(data.val);
+                    match && this.input.setHint(val + match[1]);
+                } else {
+                    this.input.clearHint();
+                }
+            },
+            isEnabled: function isEnabled() {
+                return this.enabled;
+            },
+            enable: function enable() {
+                this.enabled = true;
+            },
+            disable: function disable() {
+                this.enabled = false;
+            },
+            isActive: function isActive() {
+                return this.active;
+            },
+            activate: function activate() {
+                if (this.isActive()) {
+                    return true;
+                } else if (!this.isEnabled() || this.eventBus.before("active")) {
+                    return false;
+                } else {
+                    this.active = true;
+                    this.eventBus.trigger("active");
+                    return true;
+                }
+            },
+            deactivate: function deactivate() {
+                if (!this.isActive()) {
+                    return true;
+                } else if (this.eventBus.before("idle")) {
+                    return false;
+                } else {
+                    this.active = false;
+                    this.close();
+                    this.eventBus.trigger("idle");
+                    return true;
+                }
+            },
+            isOpen: function isOpen() {
+                return this.menu.isOpen();
+            },
+            open: function open() {
+                if (!this.isOpen() && !this.eventBus.before("open")) {
+                    this.menu.open();
+                    this._updateHint();
+                    this.eventBus.trigger("open");
+                }
+                return this.isOpen();
+            },
+            close: function close() {
+                if (this.isOpen() && !this.eventBus.before("close")) {
+                    this.menu.close();
+                    this.input.clearHint();
+                    this.input.resetInputValue();
+                    this.eventBus.trigger("close");
+                }
+                return !this.isOpen();
+            },
+            setVal: function setVal(val) {
+                this.input.setQuery(_.toStr(val));
+            },
+            getVal: function getVal() {
+                return this.input.getQuery();
+            },
+            select: function select($selectable) {
+                var data = this.menu.getSelectableData($selectable);
+                if (data && !this.eventBus.before("select", data.obj)) {
+                    this.input.setQuery(data.val, true);
+                    this.eventBus.trigger("select", data.obj);
+                    this.close();
+                    return true;
+                }
+                return false;
+            },
+            autocomplete: function autocomplete($selectable) {
+                var query, data, isValid;
+                query = this.input.getQuery();
+                data = this.menu.getSelectableData($selectable);
+                isValid = data && query !== data.val;
+                if (isValid && !this.eventBus.before("autocomplete", data.obj)) {
+                    this.input.setQuery(data.val);
+                    this.eventBus.trigger("autocomplete", data.obj);
+                    return true;
+                }
+                return false;
+            },
+            moveCursor: function moveCursor(delta) {
+                var query, $candidate, data, payload, cancelMove;
+                query = this.input.getQuery();
+                $candidate = this.menu.selectableRelativeToCursor(delta);
+                data = this.menu.getSelectableData($candidate);
+                payload = data ? data.obj : null;
+                cancelMove = this._minLengthMet() && this.menu.update(query);
+                if (!cancelMove && !this.eventBus.before("cursorchange", payload)) {
+                    this.menu.setCursor($candidate);
+                    if (data) {
+                        this.input.setInputValue(data.val);
+                    } else {
+                        this.input.resetInputValue();
+                        this._updateHint();
+                    }
+                    this.eventBus.trigger("cursorchange", payload);
+                    return true;
+                }
+                return false;
+            },
+            destroy: function destroy() {
+                this.input.destroy();
+                this.menu.destroy();
+            }
+        });
+        return Typeahead;
+
+        function c(ctx) {
+            var methods = [].slice.call(arguments, 1);
+            return function() {
+                var args = [].slice.call(arguments);
+                _.each(methods, function(method) {
+                    return ctx[method].apply(ctx, args);
+                });
+            };
+        }
+    }();
+    (function() {
+        "use strict";
+        var old, keys, methods;
+        old = $.fn.typeahead;
+        keys = {
+            www: "tt-www",
+            attrs: "tt-attrs",
+            typeahead: "tt-typeahead"
+        };
+        methods = {
+            initialize: function initialize(o, datasets) {
+                var www;
+                datasets = _.isArray(datasets) ? datasets : [].slice.call(arguments, 1);
+                o = o || {};
+                www = WWW(o.classNames);
+                return this.each(attach);
+
+                function attach() {
+                    var $input, $wrapper, $hint, $menu, defaultHint, defaultMenu, eventBus, input, menu, typeahead, MenuConstructor;
+                    _.each(datasets, function(d) {
+                        d.highlight = !!o.highlight;
+                    });
+                    $input = $(this);
+                    $wrapper = $(www.html.wrapper);
+                    $hint = $elOrNull(o.hint);
+                    $menu = $elOrNull(o.menu);
+                    defaultHint = o.hint !== false && !$hint;
+                    defaultMenu = o.menu !== false && !$menu;
+                    defaultHint && ($hint = buildHintFromInput($input, www));
+                    defaultMenu && ($menu = $(www.html.menu).css(www.css.menu));
+                    $hint && $hint.val("");
+                    $input = prepInput($input, www);
+                    if (defaultHint || defaultMenu) {
+                        $wrapper.css(www.css.wrapper);
+                        $input.css(defaultHint ? www.css.input : www.css.inputWithNoHint);
+                        $input.wrap($wrapper).parent().prepend(defaultHint ? $hint : null).append(defaultMenu ? $menu : null);
+                    }
+                    MenuConstructor = defaultMenu ? DefaultMenu : Menu;
+                    eventBus = new EventBus({
+                        el: $input
+                    });
+                    input = new Input({
+                        hint: $hint,
+                        input: $input
+                    }, www);
+                    menu = new MenuConstructor({
+                        node: $menu,
+                        datasets: datasets
+                    }, www);
+                    typeahead = new Typeahead({
+                        input: input,
+                        menu: menu,
+                        eventBus: eventBus,
+                        minLength: o.minLength
+                    }, www);
+                    $input.data(keys.www, www);
+                    $input.data(keys.typeahead, typeahead);
+                }
+            },
+            isEnabled: function isEnabled() {
+                var enabled;
+                ttEach(this.first(), function(t) {
+                    enabled = t.isEnabled();
+                });
+                return enabled;
+            },
+            enable: function enable() {
+                ttEach(this, function(t) {
+                    t.enable();
+                });
+                return this;
+            },
+            disable: function disable() {
+                ttEach(this, function(t) {
+                    t.disable();
+                });
+                return this;
+            },
+            isActive: function isActive() {
+                var active;
+                ttEach(this.first(), function(t) {
+                    active = t.isActive();
+                });
+                return active;
+            },
+            activate: function activate() {
+                ttEach(this, function(t) {
+                    t.activate();
+                });
+                return this;
+            },
+            deactivate: function deactivate() {
+                ttEach(this, function(t) {
+                    t.deactivate();
+                });
+                return this;
+            },
+            isOpen: function isOpen() {
+                var open;
+                ttEach(this.first(), function(t) {
+                    open = t.isOpen();
+                });
+                return open;
+            },
+            open: function open() {
+                ttEach(this, function(t) {
+                    t.open();
+                });
+                return this;
+            },
+            close: function close() {
+                ttEach(this, function(t) {
+                    t.close();
+                });
+                return this;
+            },
+            select: function select(el) {
+                var success = false,
+                    $el = $(el);
+                ttEach(this.first(), function(t) {
+                    success = t.select($el);
+                });
+                return success;
+            },
+            autocomplete: function autocomplete(el) {
+                var success = false,
+                    $el = $(el);
+                ttEach(this.first(), function(t) {
+                    success = t.autocomplete($el);
+                });
+                return success;
+            },
+            moveCursor: function moveCursoe(delta) {
+                var success = false;
+                ttEach(this.first(), function(t) {
+                    success = t.moveCursor(delta);
+                });
+                return success;
+            },
+            val: function val(newVal) {
+                var query;
+                if (!arguments.length) {
+                    ttEach(this.first(), function(t) {
+                        query = t.getVal();
+                    });
+                    return query;
+                } else {
+                    ttEach(this, function(t) {
+                        t.setVal(newVal);
+                    });
+                    return this;
+                }
+            },
+            destroy: function destroy() {
+                ttEach(this, function(typeahead, $input) {
+                    revert($input);
+                    typeahead.destroy();
+                });
+                return this;
+            }
+        };
+        $.fn.typeahead = function(method) {
+            if (methods[method]) {
+                return methods[method].apply(this, [].slice.call(arguments, 1));
+            } else {
+                return methods.initialize.apply(this, arguments);
+            }
+        };
+        $.fn.typeahead.noConflict = function noConflict() {
+            $.fn.typeahead = old;
+            return this;
+        };
+
+        function ttEach($els, fn) {
+            $els.each(function() {
+                var $input = $(this),
+                    typeahead;
+                (typeahead = $input.data(keys.typeahead)) && fn(typeahead, $input);
+            });
+        }
+
+        function buildHintFromInput($input, www) {
+            return $input.clone().addClass(www.classes.hint).removeData().css(www.css.hint).css(getBackgroundStyles($input)).prop("readonly", true).removeAttr("id name placeholder required").attr({
+                autocomplete: "off",
+                spellcheck: "false",
+                tabindex: -1
+            });
+        }
+
+        function prepInput($input, www) {
+            $input.data(keys.attrs, {
+                dir: $input.attr("dir"),
+                autocomplete: $input.attr("autocomplete"),
+                spellcheck: $input.attr("spellcheck"),
+                style: $input.attr("style")
+            });
+            $input.addClass(www.classes.input).attr({
+                autocomplete: "off",
+                spellcheck: false
+            });
+            try {
+                !$input.attr("dir") && $input.attr("dir", "auto");
+            } catch (e) {}
+            return $input;
+        }
+
+        function getBackgroundStyles($el) {
+            return {
+                backgroundAttachment: $el.css("background-attachment"),
+                backgroundClip: $el.css("background-clip"),
+                backgroundColor: $el.css("background-color"),
+                backgroundImage: $el.css("background-image"),
+                backgroundOrigin: $el.css("background-origin"),
+                backgroundPosition: $el.css("background-position"),
+                backgroundRepeat: $el.css("background-repeat"),
+                backgroundSize: $el.css("background-size")
+            };
+        }
+
+        function revert($input) {
+            var www, $wrapper;
+            www = $input.data(keys.www);
+            $wrapper = $input.parent().filter(www.selectors.wrapper);
+            _.each($input.data(keys.attrs), function(val, key) {
+                _.isUndefined(val) ? $input.removeAttr(key) : $input.attr(key, val);
+            });
+            $input.removeData(keys.typeahead).removeData(keys.www).removeData(keys.attr).removeClass(www.classes.input);
+            if ($wrapper.length) {
+                $input.detach().insertAfter($wrapper);
+                $wrapper.remove();
+            }
+        }
+
+        function $elOrNull(obj) {
+            var isValid, $el;
+            isValid = _.isJQuery(obj) || _.isElement(obj);
+            $el = isValid ? $(obj).first() : [];
+            return $el.length ? $el : null;
+        }
+    })();
+});  
+  	</script>
+  
+  
+	<!--<script src="https://giveto.uc.edu/file/config/headroom.min.js" type="text/javascript"></script>-->
+  	<script>
+    /*!
+ * headroom.js v0.9.3 - Give your page some headroom. Hide your header until you need it
+ * Copyright (c) 2016 Nick Williams - http://wicky.nillia.ms/headroom.js
+ * License: MIT
+ */
+
+! function (a, b) {
+	"use strict";
+	"function" == typeof define && define.amd ? define([], b) : "object" == typeof exports ? module.exports = b() : a.Headroom = b()
+}(this, function () {
+	"use strict";
+
+	function a(a) {
+		this.callback = a, this.ticking = !1
+	}
+
+	function b(a) {
+		return a && "undefined" != typeof window && (a === window || a.nodeType)
+	}
+
+	function c(a) {
+		if (arguments.length <= 0) throw new Error("Missing arguments in extend function");
+		var d, e, f = a || {};
+		for (e = 1; e < arguments.length; e++) {
+			var g = arguments[e] || {};
+			for (d in g) "object" != typeof f[d] || b(f[d]) ? f[d] = f[d] || g[d] : f[d] = c(f[d], g[d])
+		}
+		return f
+	}
+
+	function d(a) {
+		return a === Object(a) ? a : {
+			down: a,
+			up: a
+		}
+	}
+
+	function e(a, b) {
+		b = c(b, e.options), this.lastKnownScrollY = 0, this.elem = a, this.tolerance = d(b.tolerance), this.classes = b.classes, this.offset = b.offset, this.scroller = b.scroller, this.initialised = !1, this.onPin = b.onPin, this.onUnpin = b.onUnpin, this.onTop = b.onTop, this.onNotTop = b.onNotTop, this.onBottom = b.onBottom, this.onNotBottom = b.onNotBottom
+	}
+	var f = {
+		bind: !! function () {}.bind,
+		classList: "classList" in document.documentElement,
+		rAF: !!(window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame)
+	};
+	return window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame, a.prototype = {
+		constructor: a,
+		update: function () {
+			this.callback && this.callback(), this.ticking = !1
+		},
+		requestTick: function () {
+			this.ticking || (requestAnimationFrame(this.rafCallback || (this.rafCallback = this.update.bind(this))), this.ticking = !0)
+		},
+		handleEvent: function () {
+			this.requestTick()
+		}
+	}, e.prototype = {
+		constructor: e,
+		init: function () {
+			return e.cutsTheMustard ? (this.debouncer = new a(this.update.bind(this)), this.elem.classList.add(this.classes.initial), setTimeout(this.attachEvent.bind(this), 100), this) : void 0
+		},
+		destroy: function () {
+			var a = this.classes;
+			this.initialised = !1, this.elem.classList.remove(a.unpinned, a.pinned, a.top, a.notTop, a.initial), this.scroller.removeEventListener("scroll", this.debouncer, !1)
+		},
+		attachEvent: function () {
+			this.initialised || (this.lastKnownScrollY = this.getScrollY(), this.initialised = !0, this.scroller.addEventListener("scroll", this.debouncer, !1), this.debouncer.handleEvent())
+		},
+		unpin: function () {
+			var a = this.elem.classList,
+				b = this.classes;
+			!a.contains(b.pinned) && a.contains(b.unpinned) || (a.add(b.unpinned), a.remove(b.pinned), this.onUnpin && this.onUnpin.call(this))
+		},
+		pin: function () {
+			var a = this.elem.classList,
+				b = this.classes;
+			a.contains(b.unpinned) && (a.remove(b.unpinned), a.add(b.pinned), this.onPin && this.onPin.call(this))
+		},
+		top: function () {
+			var a = this.elem.classList,
+				b = this.classes;
+			a.contains(b.top) || (a.add(b.top), a.remove(b.notTop), this.onTop && this.onTop.call(this))
+		},
+		notTop: function () {
+			var a = this.elem.classList,
+				b = this.classes;
+			a.contains(b.notTop) || (a.add(b.notTop), a.remove(b.top), this.onNotTop && this.onNotTop.call(this))
+		},
+		bottom: function () {
+			var a = this.elem.classList,
+				b = this.classes;
+			a.contains(b.bottom) || (a.add(b.bottom), a.remove(b.notBottom), this.onBottom && this.onBottom.call(this))
+		},
+		notBottom: function () {
+			var a = this.elem.classList,
+				b = this.classes;
+			a.contains(b.notBottom) || (a.add(b.notBottom), a.remove(b.bottom), this.onNotBottom && this.onNotBottom.call(this))
+		},
+		getScrollY: function () {
+			return void 0 !== this.scroller.pageYOffset ? this.scroller.pageYOffset : void 0 !== this.scroller.scrollTop ? this.scroller.scrollTop : (document.documentElement || document.body.parentNode || document.body).scrollTop
+		},
+		getViewportHeight: function () {
+			return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+		},
+		getElementPhysicalHeight: function (a) {
+			return Math.max(a.offsetHeight, a.clientHeight)
+		},
+		getScrollerPhysicalHeight: function () {
+			return this.scroller === window || this.scroller === document.body ? this.getViewportHeight() : this.getElementPhysicalHeight(this.scroller)
+		},
+		getDocumentHeight: function () {
+			var a = document.body,
+				b = document.documentElement;
+			return Math.max(a.scrollHeight, b.scrollHeight, a.offsetHeight, b.offsetHeight, a.clientHeight, b.clientHeight)
+		},
+		getElementHeight: function (a) {
+			return Math.max(a.scrollHeight, a.offsetHeight, a.clientHeight)
+		},
+		getScrollerHeight: function () {
+			return this.scroller === window || this.scroller === document.body ? this.getDocumentHeight() : this.getElementHeight(this.scroller)
+		},
+		isOutOfBounds: function (a) {
+			var b = 0 > a,
+				c = a + this.getScrollerPhysicalHeight() > this.getScrollerHeight();
+			return b || c
+		},
+		toleranceExceeded: function (a, b) {
+			return Math.abs(a - this.lastKnownScrollY) >= this.tolerance[b]
+		},
+		shouldUnpin: function (a, b) {
+			var c = a > this.lastKnownScrollY,
+				d = a >= this.offset;
+			return c && d && b
+		},
+		shouldPin: function (a, b) {
+			var c = a < this.lastKnownScrollY,
+				d = a <= this.offset;
+			return c && b || d
+		},
+		update: function () {
+			var a = this.getScrollY(),
+				b = a > this.lastKnownScrollY ? "down" : "up",
+				c = this.toleranceExceeded(a, b);
+			this.isOutOfBounds(a) || (a <= this.offset ? this.top() : this.notTop(), a + this.getViewportHeight() >= this.getScrollerHeight() ? this.bottom() : this.notBottom(), this.shouldUnpin(a, c) ? this.unpin() : this.shouldPin(a, c) && this.pin(), this.lastKnownScrollY = a)
+		}
+	}, e.options = {
+		tolerance: {
+			up: 0,
+			down: 0
+		},
+		offset: 0,
+		scroller: window,
+		classes: {
+			pinned: "headroom--pinned",
+			unpinned: "headroom--unpinned",
+			top: "headroom--top",
+			notTop: "headroom--not-top",
+			bottom: "headroom--bottom",
+			notBottom: "headroom--not-bottom",
+			initial: "headroom"
+		}
+	}, e.cutsTheMustard = "undefined" != typeof f && f.rAF && f.bind && f.classList, e
+});
+
+(function ($) {
+
+	if (!$) {
+		return;
+	}
+
+	////////////
+	// Plugin //
+	////////////
+
+	$.fn.headroom = function (option) {
+		return this.each(function () {
+			var $this = $(this),
+				data = $this.data('headroom'),
+				options = typeof option === 'object' && option;
+
+			options = $.extend(true, {}, Headroom.options, options);
+
+			if (!data) {
+				data = new Headroom(this, options);
+				data.init();
+				$this.data('headroom', data);
+			}
+			if (typeof option === 'string') {
+				data[option]();
+
+				if (option === 'destroy') {
+					$this.removeData('headroom');
+				}
+			}
+		});
+	};
+
+	//////////////
+	// Data API //
+	//////////////
+
+	$('[data-headroom]').each(function () {
+		var $this = $(this);
+		$this.headroom($this.data());
+	});
+
+}(window.Zepto || window.jQuery));  
+  	</script>
+  
+  
+    <!--<script src="/give/file/redesign/js/jquery.placeholder.min.js"></script>
+    <script src="/give/file/redesign/js/typeahead.bundle.js"></script>
+    <!--<script src="/file/redesign/js/typeahead.bundle.js"></script>
+    <script src="/file/adf.js"></script>-->
+    <!--<script src="/give/file/config/headroom.min.js" type="text/javascript"></script>-->
+  
+    <script src="/give/file/adf.js"></script>
+    <!--end adf dependencies-->
+  
+</div>
+
+<script>
+    /*
+
+    IDs of Elements
+
+    numberOfInstallments
+
+    installmentAmount -- READ ONLY
+
+    totalGift -- READ ONLY
+
+    */
+    // pledgeInstallments
+
+    $("#numberOfInstallments").on("input", function() {
+        if (/^0/.test(this.value)) {
+            this.value = this.value.replace(/^0/, "")
+        }
+    })
+
+    $(document).on("change", ".fund-card-block input.adfInput", function() {
+        var cartTotal = $("#totalGift"),
+            total = 0,
+            newTotal,
+            formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+            });
+
+        $('.fund-card input').each(function() {
+            var amount = Number($(this).val());
+            total += +parseFloat(amount, 10).toFixed(2);
+        }).promise().done(function() {
+            newTotal = parseFloat(total, 10).toFixed(2);
+            cartTotal.val(formatter.format(newTotal));
+        });
+
+    });
+
+    $(document).on("change keyup", "#numberOfInstallments", function() {
+        var numberOfInstallments = $(this).val(),
+            n1 = $("#totalGift").val(),
+            n2 = $("#numberOfInstallments").val(),
+            regp = /[^0-9.-]+/g,
+            formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+            });
+        console.log(numberOfInstallments);
+
+        var installmentAmount = parseFloat(n1.replace(regp, '')) / parseFloat(n2.replace(regp, ''));
+        installmentAmount = parseFloat(installmentAmount, 10).toFixed(2);
+        $("#installmentAmount").val(formatter.format(installmentAmount));
+
+    });
+
+    if ($("#startMonth").length !== 0) {
+        var d = new Date(),
+            day = d.getDate();
+
+        function getMinDate() {
+            var date = new Date();
+
+            date.setMonth(date.getMonth() + 1, 1);
+            /*
+    	if (day > 15) {
+      		date.setMonth(date.getMonth() + 1, 1);
+    	} else if (day == 1) {
+      		// set to current date
+    	} else {
+      		date.setDate(15);
+		} */
+            return date;
+        }
+
+        $("#startMonth").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            showButtonPanel: true,
+            dateFormat: 'MM yy',
+            onClose: function(dateText, inst) {
+                $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+            },
+            minDate: getMinDate(),
+        });
+
+        $("#startMonth").datepicker("setDate", getMinDate()).attr('data-date', getMinDate());
+
+
+    }
+
+    /*  
+if ($("#startMonth:visible").length !== 0) {
+	var d = new Date(),
+		day = d.getDate();
+
+	function getMinDate() {
+		var date = new Date();
+      
+		if (day > 1) {
+			date.setMonth(date.getMonth() + 1, 1);
+		} else {
+			// set to current date
+		}
+      
+		return date;
+	}
+	$("#startMonth").datepicker({
+		beforeShowDay: function (dt)
+		{
+			return [
+				dt.getDate() == 1 || dt.getDate() == 15 ?
+					true :
+					false,
+			];
+		},
+		minDate: getMinDate(),
+        changeMonth: true,
+        changeYear: true,
+        showButtonPanel: true,
+        dateFormat: 'MM yy'
+	});
+              
+    $("#startMonth").datepicker("setDate", getMinDate());
+}
+*/
+</script>
