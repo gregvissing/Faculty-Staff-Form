@@ -410,12 +410,24 @@ var ADF = ADF || {
         // fund list
         fundList: function() {
             // fund list container
-            var fundList = $('#fundList');
+            var fundList = $('#fundList'),
+                areaSupportSelect = $("#areaSupportSelect"),
+                collegeUnitSelect = $("#collegeUnitSelect"),
+                collegeUnitToggle = $(".collegeUnitToggle"),
+                fundToggle = $(".fundToggle"),
+                fundSelect = $("#fundSelect");
 
             // designation variables
             var query = new BLACKBAUD.api.QueryService(),
                 results = [];
             // data = ADF.Defaults.emergencyData;
+
+            // filter unique values
+            function onlyUnique(value, index, self) {
+                return self.indexOf(value) === index;
+            }
+
+            let areaToSupport = ["The UC Fund", "Scholarships", "UC Health", "Colleges/Units"];
 
             // get results
             query.getResults(ADF.Defaults.designationQuery, function(data) {
@@ -440,6 +452,16 @@ var ADF = ADF || {
                     }
                 });
 
+                var count = 0;
+                $.each(areaToSupport, function(key1, value) {
+                    // build html structure for categories
+                    areaSupportSelect.append('<option value="' + value + '" class="des-cat cat-' + key1 + '">' + value + '</option>');
+                    count++;
+                    if (count == areaToSupport.length) {
+                        ADF.Methods.hideQueryLoader();
+                    }
+                });
+
                 // filter unique values
                 function onlyUnique(value, index, self) {
                     return self.indexOf(value) === index;
@@ -453,10 +475,10 @@ var ADF = ADF || {
                 // populate unique categories
                 var uniqueCat = category.filter(onlyUnique);
 
-                uniqueCat.push(uniqueCat.shift());
-                uniqueCat.push(uniqueCat.shift());
+                // uniqueCat.push(uniqueCat.shift());
+                // uniqueCat.push(uniqueCat.shift());
 
-                $.each(uniqueCat, function(key1, value1) {
+                /*$.each(uniqueCat, function(key1, value1) {
                     // build html structure for categories
                     fundList.append('<div class="des-block"><div class="des-cat cat-' + key1 + '">' + value1 + '</div><div class="des-group"></div></div>');
 
@@ -514,12 +536,143 @@ var ADF = ADF || {
                             // fundList.find('.cat-' + key1).next().find('.subcat-' + key2).next().append('<div class="checkbox"><input type="checkbox" id="' + desInput + '" value="' + desId + '" data-cat="' + desCat + '" data-subcat="' + desSubcat + '"><label for="' + desInput + '">' + desName + '</label></div>');
                         });
                     });
-                });
+                });*/
 
-                ADF.Methods.hideQueryLoader();
+                // ADF.Methods.hideQueryLoader();
 
                 // run fund selection
-                ADF.Methods.fundCards();
+                // ADF.Methods.fundCards();
+            });
+
+            // run fund selection
+            ADF.Methods.fundCards();
+
+            $(areaSupportSelect).on("change", function() {
+                collegeUnitSelect.prop("selectedIndex", 0).find('option').not("option:first").remove();
+                fundSelect.prop("selectedIndex", 0).find('option').not("option:first").remove();
+
+                var selection = $(this).val();
+                // filter categories based on selection
+                var filterCat = $.grep(results, function(v) {
+                    return v.cat === selection;
+                });
+
+                // get sub-categories from category filter
+                var subCategory = filterCat.map(function(obj) {
+                    return obj.subcat;
+                });
+
+                function Ascending_sort(a, b) {
+                    return $(b)
+                        .text().toUpperCase() < $(a)
+                        .text().toUpperCase() ? 1 : -1;
+                }
+
+                // populate unique sub-categories
+                var uniqueSubCat = subCategory.filter(onlyUnique);
+                if (selection == "Colleges/Units") {
+                    $(collegeUnitToggle).slideDown();
+                    $(fundToggle).slideUp();
+
+                    $.each(uniqueSubCat, function(key, value) {
+                        var trimmedValue = value.substring(value.indexOf("-") + 1);
+                        $(collegeUnitSelect).append($('<option value="' + value + '">' + trimmedValue + '</option>'));
+                    });
+
+                    var collegeUnitSelectVar = document.getElementById("collegeUnitSelect"),
+                        fundSelectVar = document.getElementById("fundSelect");
+                    collegeUnitSelectVar.disabled = false;
+                    fundSelectVar.disabled = true;
+                    collegeUnitSelectVar.setAttribute("selectedIndex", 0);
+
+                    $(collegeUnitSelect).focus();
+                    $("#collegeUnitSelect option:not(:first)")
+                        .sort(Ascending_sort)
+                        .appendTo("#collegeUnitSelect");
+                } else if (selection == "Scholarships" || selection == "The UC Fund" || selection == "UC Health") {
+                    $(collegeUnitToggle).slideUp();
+                    $(fundToggle).slideDown();
+
+                    $.each(filterCat, function(key, value) {
+                        $(fundSelect).append(
+                            $(
+                                '<option data-cat="' + value.cat + '" data-subcat="' + value.subcat + '" value="' +
+                                value.id +
+                                '">' +
+                                value.name.split("(")[0].trim() +
+                                '</option>'
+                            )
+                        );
+                    });
+
+                    var collegeUnitSelectVar = document.getElementById("collegeUnitSelect"),
+                        fundSelectVar = document.getElementById("fundSelect");
+                    collegeUnitSelectVar.disabled = true;
+                    fundSelectVar.disabled = false;
+                    collegeUnitSelectVar.setAttribute("selectedIndex", 0);
+
+                    $(fundSelect).focus();
+                    $("#fundSelect option:not(:first)")
+                        .sort(Ascending_sort)
+                        .appendTo("#fundSelect");
+                }
+                // else if (selection == "Type your own fund") {
+                //     $(".toggleOtherFund").slideDown();
+                //     $("#otherArea").focus();
+
+                //     var position = $($("#otherArea")).offset().top;
+                //     $("body, html").animate({
+                //             scrollTop: position - 60
+                //         },
+                //         700
+                //     );
+                // }
+                else {
+                    // do nothing
+                }
+            });
+
+            // sub-category menu (level 2)
+            $(collegeUnitSelect).on("change", function() {
+                $(fundToggle).slideDown();
+
+                // remove all options in designation menu except the first
+                $(fundSelect).focus().prop("selectedIndex", 0).find("option").not("option:first").remove();
+
+                // define category and sub-category selections
+                var selection1 = $(areaSupportSelect).val();
+                var selection2 = $(this).val();
+
+                // filter designations based on category and sub-category selections
+                var filterSubCat = $.grep(results, function(v) {
+                    return v.cat === selection1 && v.subcat === selection2;
+                });
+
+                // populate designations
+                $.each(filterSubCat, function(key, value) {
+                    $(fundSelect).append(
+                        $(
+                            '<option data-cat="' + value.cat + '" data-subcat="' + value.subcat + '" value="' +
+                            value.id +
+                            '">' +
+                            value.name.split("(")[0].trim() +
+                            '</option>'
+                        )
+                    );
+                });
+
+                var fundSelectVar = document.getElementById("fundSelect");
+                fundSelectVar.disabled = false;
+
+                function Ascending_sort(a, b) {
+                    return $(b)
+                        .text().toUpperCase() < $(a)
+                        .text().toUpperCase() ? 1 : -1;
+                }
+
+                $("#fundSelect option:not(:first)")
+                    .sort(Ascending_sort)
+                    .appendTo(fundSelect);
             });
         },
 
@@ -788,7 +941,8 @@ var ADF = ADF || {
 
         hideQueryLoader: function() {
             $("#queryLoader").slideUp();
-            $(".fund-list").slideDown();
+            $(".fundSelect").slideDown();
+            // $(".fund-list").slideDown();
         },
 
         // fund card events
@@ -946,6 +1100,77 @@ var ADF = ADF || {
 
         // add to cart
         addFund: function(elem) {
+            // hide empty card
+            if ($('.fund-card.empty').is(':visible')) {
+                $('.fund-card.empty').addClass('hidden');
+            }
+
+            // fund data
+            var value, label, cat, subcat, id;
+            if (elem.is('#desSearch')) {
+                value = elem.data('value');
+                label = elem.data('label');
+                cat = elem.data('cat');
+                subcat = elem.data('subcat');
+                id = elem.data('id');
+
+                // select corresponding checkbox in fund list
+                $('.des-select').find('#' + id).prop('checked', true);
+            } else if (elem.is('#fundSelect')) {
+                value = $("#fundSelect option:selected").val();
+                label = $("#fundSelect option:selected").text();
+                cat = $("#fundSelect option:selected").data("cat");
+                subcat = $("#fundSelect option:selected").data("subcat");
+                id = $("#fundSelect option:selected").val();
+
+                // value = elem.prev('input').val();
+                // label = elem.text();
+                // cat = elem.prev('input').data('cat');
+                // subcat = elem.prev('input').data('subcat');
+                // id = elem.prev('input').attr('id');
+            } else if (elem.is('.add-other')) {
+                value = $("#otherArea").data("guid");
+                label = $("#otherArea").val();
+                cat = "Other Fund";
+                subcat = $("#otherArea").val();
+                id = $("#otherArea").data("guid");
+
+                $("#comments").val("Other Fund: " + label);
+            }
+
+            $("#otherArea").val("");
+
+            // build fund card markup
+            var card = $(
+                '<div class="fund-card" data-id="' + id + '">' +
+                '<div class="fund-card-header">' +
+                '<p><span class="fund-cat">' + cat + '</span> / <span class="fund-subcat">' + subcat.substring(subcat.indexOf("-") + 1).trim() + '</span></p>' +
+                '</div>' +
+                '<div class="fund-card-block">' +
+                '<div class="row">' +
+                '<div class="g-5 t-g-2 relative remove-bottom"><p class="fund-name">' + label + '</p><p class="fund-guid hidden">' + value + '</p></div>' +
+                '<div class="g-3 t-g-2 relative remove-bottom"><p class="symbol">$</p><input class="adfInput form-control required" type="text" placeholder="0.00" required></div>' +
+                '</div>' +
+                '</div>' +
+                '<div class="fund-card-footer">' +
+                '<a href="#" class="button remove-fund"><span class="fa fa-times"></span>&nbsp;&nbsp;Remove Gift</a>' +
+                '</div>' +
+                '</div>'
+            );
+
+            // insert fund card
+            card.insertBefore('.proc-fee');
+
+            // update total amount
+            ADF.Methods.updateTotal();
+
+            // update pledge summary
+            // if ($('#pledgeGift').is(':checked')) {
+            //     ADF.Methods.pledgeSummary();
+            // }
+        },
+
+        addFund1: function(elem) {
             // hide empty card
             if ($('.fund-card.empty').is(':visible')) {
                 $('.fund-card.empty').addClass('hidden');
@@ -2518,3 +2743,7 @@ function checkboxPressed(event) {
     }
 
 }
+
+$("#fundSelect").on('change', function(e) {
+    ADF.Methods.addFund($(this));
+});
